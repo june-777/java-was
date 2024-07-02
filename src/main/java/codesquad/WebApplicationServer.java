@@ -44,11 +44,41 @@ public class WebApplicationServer {
                  OutputStream outputStream = socket.getOutputStream()
             ) {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
+                HttpRequest httpRequest = HttpRequestMapper.from(bufferedReader);
+                HttpResponse httpResponse = httpRequestHandler.handle(httpRequest);
+                sendResponse(outputStream, httpResponse);
             } catch (IOException | RuntimeException e) {
                 logger.error(e.getMessage(), e);
             }
         }
+    }
+
+    public void sendResponse(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
+        sendStatus(outputStream, httpResponse);
+        sendHeaders(outputStream, httpResponse);
+        sendBody(outputStream, httpResponse);
+    }
+
+    private void sendStatus(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
+        String status = HttpVersion.HTTP1_1.getName() + httpResponse.getHttpStatus().getCode()
+                + httpResponse.getHttpStatus().getRepresentation();
+        outputStream.write(status.getBytes());
+        outputStream.write(CRLF.getBytes());
+    }
+
+    private void sendHeaders(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
+        Map<String, String> headers = httpResponse.getHeaders();
+        for (String headerName : headers.keySet()) {
+            String headerValue = headers.get(headerName);
+            String header = headerName + ": " + headerValue;
+            outputStream.write(header.getBytes());
+        }
+        outputStream.write(CRLF.getBytes());
+        outputStream.write(CRLF.getBytes());
+    }
+
+    private void sendBody(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
+        outputStream.write(httpResponse.getBody().getBytes());
     }
 
 }
