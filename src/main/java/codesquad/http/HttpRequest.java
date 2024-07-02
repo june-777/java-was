@@ -1,5 +1,8 @@
 package codesquad.http;
 
+import java.util.Map;
+import java.util.Optional;
+
 public class HttpRequest {
 
     private final HttpRequestFirstLine httpRequestFirstLine;
@@ -20,6 +23,11 @@ public class HttpRequest {
 
     public String getPath() {
         return httpRequestFirstLine.getPath();
+    }
+
+    public Optional<String> getHeaderValue(String headerName) {
+        Map<String, String> header = headers.getHeaders();
+        return Optional.ofNullable(header.get(headerName));
     }
 
     @Override
