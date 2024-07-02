@@ -10,6 +10,10 @@ public class HttpRequest {
         this.headers = headers;
     }
 
+    public HttpVersion getVersion() {
+        return httpRequestFirstLine.getVersion();
+    }
+
     public HttpMethod getMethod() {
         return httpRequestFirstLine.getMethod();
     }
