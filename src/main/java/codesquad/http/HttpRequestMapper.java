@@ -23,7 +23,7 @@ public class HttpRequestMapper {
         HttpMethod method = HttpMethod.valueOf(startLineParts[0]);
         String path = startLineParts[1];
         HttpVersion version = HttpVersion.of(startLineParts[2]);
-        return new HttpRequestFirstLine(version, method, path);
+        return new HttpRequestFirstLine(method, path, version);
     }
 
     private static HttpHeaders parseHeaders(BufferedReader bufferedReader) throws IOException {
