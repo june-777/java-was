@@ -1,13 +1,17 @@
 package codesquad.handler;
 
+import static codesquad.http.HttpStatus.BAD_REQUEST;
+import static codesquad.http.HttpStatus.NOT_FOUND;
+import static codesquad.http.HttpStatus.OK;
+
 import codesquad.http.HttpHeaders;
 import codesquad.http.HttpMediaType;
 import codesquad.http.HttpMethod;
 import codesquad.http.HttpPath;
 import codesquad.http.HttpRequest;
 import codesquad.http.HttpResponse;
-import codesquad.http.HttpStatus;
 import codesquad.http.HttpVersion;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class HttpRequestHandler {
@@ -29,19 +33,33 @@ public class HttpRequestHandler {
         HttpPath path = httpRequest.getPath();
 
         if (method == HttpMethod.GET) {
-            String fileExtension = getFileExtension(path.getDefaultPath());
-            HttpMediaType httpMediaType = mappingMediaTypeFileExtensionResolver.resolve(fileExtension);
+            // TODO: 정적 자원 처리
+            if (path.isOnlyDefaultPath()) {
+                try {
+                    String pathValue = path.getDefaultPath();
+                    if (path.isDirectoryPath()) {
+                        pathValue += "/index.html";
+                    }
+                    String fileExtension = getFileExtension(pathValue);
+                    HttpMediaType httpMediaType = mappingMediaTypeFileExtensionResolver.resolve(fileExtension);
+                    byte[] body = staticResourceHandler.getFileContents(pathValue);
 
-            byte[] body = staticResourceHandler.getFileContents(path.getDefaultPath());
+                    HttpHeaders httpHeaders = HttpHeaders.empty();
+                    httpHeaders.setContentType(httpMediaType);
+                    httpHeaders.setContentLength(body.length);
+                    return new HttpResponse(httpVersion, OK, httpHeaders, body);
+                } catch (FileNotFoundException e) {
+                    HttpHeaders httpHeaders = HttpHeaders.empty();
+                    return new HttpResponse(httpVersion, NOT_FOUND, httpHeaders,
+                            NOT_FOUND.getRepresentation().getBytes());
+                }
 
-            HttpHeaders httpHeaders = HttpHeaders.empty();
-            httpHeaders.setContentType(httpMediaType);
-            httpHeaders.setContentLength(body.length);
+                // TODO: 동적 자원 처리 (Query String도 있는 경우)
 
-            return new HttpResponse(httpVersion, HttpStatus.OK, httpHeaders, body);
+            }
         }
 
-        return new HttpResponse(httpVersion, HttpStatus.BAD_REQUEST, HttpHeaders.empty(), new byte[0]);
+        return new HttpResponse(httpVersion, BAD_REQUEST, HttpHeaders.empty(), new byte[0]);
     }
 
     private String getFileExtension(String path) {
