@@ -15,7 +15,8 @@ import org.junit.jupiter.api.Test;
 
 class HttpRequestHandlerTest {
 
-    HttpRequestHandler httpRequestHandler = new HttpRequestHandler();
+    HttpRequestHandler httpRequestHandler = new HttpRequestHandler(new StaticResourceHandler(),
+            new MappingMediaTypeFileExtensionResolver());
 
     @Test
     @DisplayName("[Success] /index.html로 요청을 보내면 200 OK 응답이 발생한다.")

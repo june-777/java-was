@@ -11,6 +11,16 @@ import java.io.IOException;
 
 public class HttpRequestHandler {
 
+    private final StaticResourceHandler staticResourceHandler;
+    private final MappingMediaTypeFileExtensionResolver mappingMediaTypeFileExtensionResolver;
+
+    public HttpRequestHandler(StaticResourceHandler staticResourceHandler,
+                              MappingMediaTypeFileExtensionResolver mappingMediaTypeFileExtensionResolver
+    ) {
+        this.staticResourceHandler = staticResourceHandler;
+        this.mappingMediaTypeFileExtensionResolver = mappingMediaTypeFileExtensionResolver;
+    }
+
     public HttpResponse handle(final HttpRequest httpRequest) throws IOException {
         // TODO: reuqetURL 이 API인지, 정적 리소스 요청인지 구분하는 로직 필요
         HttpVersion httpVersion = httpRequest.getVersion();
