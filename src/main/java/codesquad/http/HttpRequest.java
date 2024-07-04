@@ -21,7 +21,7 @@ public class HttpRequest {
         return httpRequestFirstLine.getMethod();
     }
 
-    public String getPath() {
+    public HttpPath getPath() {
         return httpRequestFirstLine.getPath();
     }
 
