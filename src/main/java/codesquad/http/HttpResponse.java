@@ -1,5 +1,6 @@
 package codesquad.http;
 
+import static codesquad.http.HttpHeaders.HeaderName.LOCATION;
 import static codesquad.utils.StringUtils.CRLF;
 
 import java.util.Arrays;
@@ -7,14 +8,12 @@ import java.util.Map;
 
 public class HttpResponse {
 
-    private final HttpVersion httpVersion;
-    private final HttpStatus httpStatus;
+    private final HttpResponseLine httpResponseLine;
     private final HttpHeaders headers;
     private final byte[] body;
 
-    public HttpResponse(HttpVersion httpVersion, HttpStatus httpStatus, HttpHeaders headers, byte[] body) {
-        this.httpVersion = httpVersion;
-        this.httpStatus = httpStatus;
+    public HttpResponse(HttpResponseLine httpResponseLine, HttpHeaders headers, byte[] body) {
+        this.httpResponseLine = httpResponseLine;
         this.headers = headers;
         this.body = body;
     }
@@ -22,14 +21,17 @@ public class HttpResponse {
     public String getResponseLine() {
         String delimiter = " ";
         StringBuilder sb = new StringBuilder();
-        sb.append(httpVersion.getName()).append(delimiter)
-                .append(httpStatus.getCode()).append(delimiter)
-                .append(httpStatus.getRepresentation());
+        HttpVersion version = httpResponseLine.getVersion();
+        HttpStatus status = httpResponseLine.getStatus();
+
+        sb.append(version.getName()).append(delimiter)
+                .append(status.getCode()).append(delimiter)
+                .append(status.getRepresentation());
         return sb.toString();
     }
 
     public HttpStatus getHttpStatus() {
-        return httpStatus;
+        return httpResponseLine.getStatus();
     }
 
     public String getHeaders() {
@@ -49,7 +51,7 @@ public class HttpResponse {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Status: ").append(httpStatus);
+        sb.append("Status: ").append(httpResponseLine.getStatus());
         sb.append("Headers: ").append(headers);
         sb.append("Response Body: ").append(Arrays.toString(body));
         return sb.toString();
