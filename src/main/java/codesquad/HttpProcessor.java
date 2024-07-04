@@ -52,30 +52,22 @@ public class HttpProcessor {
     }
 
     public void sendResponse(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
-        sendStatus(outputStream, httpResponse);
+        sendResponseLine(outputStream, httpResponse);
         sendHeaders(outputStream, httpResponse);
         sendBody(outputStream, httpResponse);
     }
 
-    private void sendStatus(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
-        String status = httpResponse.getHttpVersion() + " " + httpResponse.getHttpStatus().getCode() + " "
-                + httpResponse.getHttpStatus().getRepresentation();
-        outputStream.write(status.getBytes());
+    private void sendResponseLine(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
+        outputStream.write(httpResponse.getResponseLine().getBytes());
         outputStream.write(CRLF.getBytes());
     }
 
     private void sendHeaders(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
-        Map<String, String> headers = httpResponse.getHeaders();
-        for (String headerName : headers.keySet()) {
-            String headerValue = headers.get(headerName);
-            String header = headerName + ": " + headerValue;
-            outputStream.write(header.getBytes());
-        }
-        outputStream.write(CRLF.getBytes());
+        outputStream.write(httpResponse.getHeaders().getBytes());
         outputStream.write(CRLF.getBytes());
     }
 
     private void sendBody(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
-        outputStream.write(httpResponse.getBody().getBytes());
+        outputStream.write(httpResponse.getBody());
     }
 }
