@@ -1,5 +1,6 @@
 package codesquad.http;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class HttpPath {
@@ -23,6 +24,28 @@ public class HttpPath {
     public String getDefaultPath() {
         return defaultPath;
     }
+
+    public boolean isDirectoryPath() {
+        return isOnlyDefaultPath() && !hasFileExtensionInDefaultPath();
+    }
+
+    public boolean isOnlyDefaultPath() {
+        return hasDefaultPath() && !hasQueryString();
+    }
+
+    private boolean hasDefaultPath() {
+        return defaultPath != null && !defaultPath.isEmpty();
+    }
+
+    private boolean hasQueryString() {
+        return queryString != null && !queryString.isEmpty();
+    }
+
+    private boolean hasFileExtensionInDefaultPath() {
+        return Arrays.stream(SupportFileExtension.values())
+                .anyMatch(extension -> defaultPath.contains(extension.getName()));
+    }
+
 
     @Override
     public String toString() {
