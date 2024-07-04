@@ -3,6 +3,7 @@ package codesquad.handler;
 import codesquad.http.HttpHeaders;
 import codesquad.http.HttpMediaType;
 import codesquad.http.HttpMethod;
+import codesquad.http.HttpPath;
 import codesquad.http.HttpRequest;
 import codesquad.http.HttpResponse;
 import codesquad.http.HttpStatus;
@@ -25,13 +26,13 @@ public class HttpRequestHandler {
         // TODO: reuqetURL 이 API인지, 정적 리소스 요청인지 구분하는 로직 필요
         HttpVersion httpVersion = httpRequest.getVersion();
         HttpMethod method = httpRequest.getMethod();
-        String path = httpRequest.getPath();
+        HttpPath path = httpRequest.getPath();
 
         if (method == HttpMethod.GET) {
-            String fileExtension = getFileExtension(path);
+            String fileExtension = getFileExtension(path.getDefaultPath());
             HttpMediaType httpMediaType = mappingMediaTypeFileExtensionResolver.resolve(fileExtension);
 
-            byte[] body = staticResourceHandler.getFileContents(path);
+            byte[] body = staticResourceHandler.getFileContents(path.getDefaultPath());
 
             HttpHeaders httpHeaders = HttpHeaders.empty();
             httpHeaders.setContentType(httpMediaType);
