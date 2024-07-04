@@ -24,4 +24,8 @@ public enum HttpVersion {
                 .orElseThrow(() -> new IllegalArgumentException("지원하지 않는 HttpVersion 입니다."));
     }
 
+    @Override
+    public String toString() {
+        return "HttpVersion='" + name + '\'';
+    }
 }
