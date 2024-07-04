@@ -1,0 +1,68 @@
+package codesquad.http;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class HttpRequestParser {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequestParser.class);
+
+    public HttpRequest parse(final BufferedReader bufferedReader) throws IOException {
+        String requestLine;
+
+        requestLine = bufferedReader.readLine();
+        HttpRequestFirstLine firstLine = parseHttpRequestFirstLine(requestLine);
+        HttpHeaders headers = parseHeaders(bufferedReader);
+
+        return new HttpRequest(firstLine, headers);
+    }
+
+    private HttpRequestFirstLine parseHttpRequestFirstLine(String requestLine) {
+        logger.debug("requestLine: {}", requestLine);
+        String[] startLineParts = requestLine.split(" ");
+
+        if (startLineParts.length != 3) {
+            throw new IllegalArgumentException("Invalid request line: " + requestLine);
+        }
+
+        HttpMethod method = HttpMethod.valueOf(startLineParts[0]);
+        String defaultPath = startLineParts[1];
+        HttpVersion version = HttpVersion.of(startLineParts[2]);
+
+        String[] pathParts = defaultPath.split("\\?");
+        if (pathParts.length == 1) {
+            HttpPath httpPath = HttpPath.ofOnlyDefaultPath(pathParts[0]);
+            HttpRequestFirstLine httpRequestFirstLine = new HttpRequestFirstLine(method, httpPath, version);
+            logger.debug("httpRequestFirstLine: {}", httpRequestFirstLine);
+            return httpRequestFirstLine;
+        }
+
+        String queryStrings = pathParts[1];
+        String[] queryStringParts = queryStrings.split("&");
+        Map<String, String> allQueryStrings = new HashMap<>();
+        for (String queryStringPart : queryStringParts) {
+            String[] queryStringComponentPart = queryStringPart.split("=");
+            allQueryStrings.put(queryStringComponentPart[0], queryStringComponentPart[1]);
+        }
+        HttpPath httpPath = HttpPath.of(defaultPath, allQueryStrings);
+
+        HttpRequestFirstLine httpRequestFirstLine = new HttpRequestFirstLine(method, httpPath, version);
+        logger.debug("httpRequestFirstLine: {}", httpRequestFirstLine);
+        return httpRequestFirstLine;
+    }
+
+    private HttpHeaders parseHeaders(BufferedReader bufferedReader) throws IOException {
+        String requestLine;
+        Map<String, String> headers = new HashMap<>();
+        while (!(requestLine = bufferedReader.readLine()).isBlank()) {
+            String[] headerParts = requestLine.split(": ", 2);
+            headers.put(headerParts[0], headerParts[1]);
+        }
+        return HttpHeaders.of(headers);
+    }
+
+}

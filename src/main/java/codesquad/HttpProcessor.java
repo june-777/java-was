@@ -4,7 +4,7 @@ import static codesquad.utils.StringUtils.CRLF;
 
 import codesquad.handler.HttpRequestHandler;
 import codesquad.http.HttpRequest;
-import codesquad.http.HttpRequestMapper;
+import codesquad.http.HttpRequestParser;
 import codesquad.http.HttpResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,12 +19,12 @@ public class HttpProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(WebApplicationServer.class);
 
-    private final HttpRequestMapper httpRequestMapper;
+    private final HttpRequestParser httpRequestParser;
     private final HttpRequestHandler httpRequestHandler;
     private final Socket socket;
 
-    public HttpProcessor(HttpRequestMapper httpRequestMapper, HttpRequestHandler httpRequestHandler, Socket socket) {
-        this.httpRequestMapper = httpRequestMapper;
+    public HttpProcessor(HttpRequestParser httpRequestParser, HttpRequestHandler httpRequestHandler, Socket socket) {
+        this.httpRequestParser = httpRequestParser;
         this.httpRequestHandler = httpRequestHandler;
         this.socket = socket;
     }
@@ -34,7 +34,7 @@ public class HttpProcessor {
              OutputStream outputStream = socket.getOutputStream()
         ) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            HttpRequest httpRequest = httpRequestMapper.from(bufferedReader);
+            HttpRequest httpRequest = httpRequestParser.parse(bufferedReader);
             HttpResponse httpResponse = httpRequestHandler.handle(httpRequest);
 
             sendResponse(outputStream, httpResponse);

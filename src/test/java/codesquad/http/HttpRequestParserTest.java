@@ -8,9 +8,9 @@ import java.io.StringReader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class HttpRequestMapperTest {
+class HttpRequestParserTest {
 
-    HttpRequestMapper httpRequestMapper = new HttpRequestMapper();
+    HttpRequestParser httpRequestParser = new HttpRequestParser();
 
     @Test
     @DisplayName("[Success] HTTP 규약에 맞는 요청")
@@ -21,7 +21,7 @@ class HttpRequestMapperTest {
                 "\r\n";
 
         BufferedReader bufferedReader = new BufferedReader(new StringReader(request));
-        HttpRequest httpRequest = httpRequestMapper.from(bufferedReader);
+        HttpRequest httpRequest = httpRequestParser.parse(bufferedReader);
 
         assertFirstLine(httpRequest);
         assertHeaders(httpRequest);
