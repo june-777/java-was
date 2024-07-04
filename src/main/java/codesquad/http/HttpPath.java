@@ -1,6 +1,7 @@
 package codesquad.http;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 public class HttpPath {
@@ -46,6 +47,9 @@ public class HttpPath {
                 .anyMatch(extension -> defaultPath.contains(extension.getName()));
     }
 
+    public Map<String, String> getQueryString() {
+        return Collections.unmodifiableMap(queryString);
+    }
 
     @Override
     public String toString() {

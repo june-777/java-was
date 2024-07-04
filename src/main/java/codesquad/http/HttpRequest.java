@@ -1,5 +1,6 @@
 package codesquad.http;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,6 +24,10 @@ public class HttpRequest {
 
     public HttpPath getPath() {
         return httpRequestFirstLine.getPath();
+    }
+
+    public Map<String, String> getQueryStrings() {
+        return Collections.unmodifiableMap(getPath().getQueryString());
     }
 
     public Optional<String> getHeaderValue(String headerName) {
