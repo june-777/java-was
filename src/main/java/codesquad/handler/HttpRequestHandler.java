@@ -16,13 +16,13 @@ import java.io.IOException;
 
 public class HttpRequestHandler {
 
-    private final StaticResourceHandler staticResourceHandler;
+    private final StaticResourceReader staticResourceReader;
     private final MappingMediaTypeFileExtensionResolver mappingMediaTypeFileExtensionResolver;
 
-    public HttpRequestHandler(StaticResourceHandler staticResourceHandler,
+    public HttpRequestHandler(StaticResourceReader staticResourceReader,
                               MappingMediaTypeFileExtensionResolver mappingMediaTypeFileExtensionResolver
     ) {
-        this.staticResourceHandler = staticResourceHandler;
+        this.staticResourceReader = staticResourceReader;
         this.mappingMediaTypeFileExtensionResolver = mappingMediaTypeFileExtensionResolver;
     }
 
@@ -42,7 +42,7 @@ public class HttpRequestHandler {
                     }
                     String fileExtension = getFileExtension(pathValue);
                     HttpMediaType httpMediaType = mappingMediaTypeFileExtensionResolver.resolve(fileExtension);
-                    byte[] body = staticResourceHandler.getFileContents(pathValue);
+                    byte[] body = staticResourceReader.getFileContents(pathValue);
 
                     HttpHeaders httpHeaders = HttpHeaders.empty();
                     httpHeaders.setContentType(httpMediaType);

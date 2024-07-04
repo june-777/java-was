@@ -2,7 +2,7 @@ package codesquad;
 
 import codesquad.handler.HttpRequestHandler;
 import codesquad.handler.MappingMediaTypeFileExtensionResolver;
-import codesquad.handler.StaticResourceHandler;
+import codesquad.handler.StaticResourceReader;
 import codesquad.http.HttpRequestParser;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -19,7 +19,7 @@ public class WebApplicationServer {
 
     private final HttpRequestParser httpRequestParser = new HttpRequestParser();
     private final HttpRequestHandler httpRequestHandler =
-            new HttpRequestHandler(new StaticResourceHandler(), new MappingMediaTypeFileExtensionResolver());
+            new HttpRequestHandler(new StaticResourceReader(), new MappingMediaTypeFileExtensionResolver());
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     public void start() {
