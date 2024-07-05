@@ -32,6 +32,10 @@ public class HttpHeaders {
         headers.put(CONTENT_LENGTH.getName(), String.valueOf(contentLength));
     }
 
+    public void setHeader(final String name, final String value) {
+        headers.put(name, value);
+    }
+
     public Map<String, String> getHeaders() {
         return Collections.unmodifiableMap(headers);
     }
@@ -47,7 +51,8 @@ public class HttpHeaders {
 
     public enum HeaderName {
         CONTENT_TYPE("Content-Type"),
-        CONTENT_LENGTH("Content-Length");
+        CONTENT_LENGTH("Content-Length"),
+        LOCATION("Location");
 
         private final String name;
 
