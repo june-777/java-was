@@ -2,6 +2,8 @@ package codesquad.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -21,7 +23,7 @@ public class HttpRequestParser {
         return new HttpRequest(firstLine, headers);
     }
 
-    private HttpRequestFirstLine parseHttpRequestFirstLine(String requestLine) {
+    private HttpRequestFirstLine parseHttpRequestFirstLine(String requestLine) throws UnsupportedEncodingException {
         logger.debug("requestLine: {}", requestLine);
         String[] startLineParts = requestLine.split(" ");
 
@@ -34,6 +36,7 @@ public class HttpRequestParser {
         HttpVersion version = HttpVersion.of(startLineParts[2]);
 
         String[] pathParts = defaultPath.split("\\?");
+        logger.debug("pathParts: {}", (Object) pathParts);
         if (pathParts.length == 1) {
             HttpPath httpPath = HttpPath.ofOnlyDefaultPath(pathParts[0]);
             HttpRequestFirstLine httpRequestFirstLine = new HttpRequestFirstLine(method, httpPath, version);
@@ -41,11 +44,14 @@ public class HttpRequestParser {
             return httpRequestFirstLine;
         }
 
+        defaultPath = pathParts[0];
         String queryStrings = pathParts[1];
+        logger.debug("queryStrings: {}", queryStrings);
         String[] queryStringParts = queryStrings.split("&");
         Map<String, String> allQueryStrings = new HashMap<>();
         for (String queryStringPart : queryStringParts) {
-            String[] queryStringComponentPart = queryStringPart.split("=");
+            String decodedQueryString = URLDecoder.decode(queryStringPart, "UTF-8");
+            String[] queryStringComponentPart = decodedQueryString.split("=");
             allQueryStrings.put(queryStringComponentPart[0], queryStringComponentPart[1]);
         }
         HttpPath httpPath = HttpPath.of(defaultPath, allQueryStrings);
