@@ -13,8 +13,6 @@ public class UserRegistrationHandler implements Handler {
 
     @Override
     public void service(final HttpRequest request, final HttpResponse response) {
-        logger.debug("UserRegistrationHandler Start");
-
         Map<String, String> queryStrings = request.getQueryStrings();
 
         String userId = queryStrings.get("userId");
@@ -22,10 +20,8 @@ public class UserRegistrationHandler implements Handler {
         String name = queryStrings.get("name");
         String email = queryStrings.get("email");
         User user = new User(userId, password, name, email);
-        logger.debug("user = {}", user);
+        logger.debug("User Registration Success = {}", user);
         response.sendRedirect("/");
-
-        logger.debug("UserRegistrationHandler End");
     }
 
 }

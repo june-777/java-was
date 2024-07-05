@@ -36,7 +36,6 @@ public class HttpRequestParser {
         HttpVersion version = HttpVersion.of(startLineParts[2]);
 
         String[] pathParts = defaultPath.split("\\?");
-        logger.debug("pathParts: {}", (Object) pathParts);
         if (pathParts.length == 1) {
             HttpPath httpPath = HttpPath.ofOnlyDefaultPath(pathParts[0]);
             HttpRequestFirstLine httpRequestFirstLine = new HttpRequestFirstLine(method, httpPath, version);
@@ -47,6 +46,7 @@ public class HttpRequestParser {
         defaultPath = pathParts[0];
         String queryStrings = pathParts[1];
         logger.debug("queryStrings: {}", queryStrings);
+
         String[] queryStringParts = queryStrings.split("&");
         Map<String, String> allQueryStrings = new HashMap<>();
         for (String queryStringPart : queryStringParts) {
@@ -54,8 +54,8 @@ public class HttpRequestParser {
             String[] queryStringComponentPart = decodedQueryString.split("=");
             allQueryStrings.put(queryStringComponentPart[0], queryStringComponentPart[1]);
         }
-        HttpPath httpPath = HttpPath.of(defaultPath, allQueryStrings);
 
+        HttpPath httpPath = HttpPath.of(defaultPath, allQueryStrings);
         HttpRequestFirstLine httpRequestFirstLine = new HttpRequestFirstLine(method, httpPath, version);
         logger.debug("httpRequestFirstLine: {}", httpRequestFirstLine);
         return httpRequestFirstLine;

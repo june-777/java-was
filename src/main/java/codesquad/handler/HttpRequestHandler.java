@@ -27,7 +27,6 @@ public class HttpRequestHandler {
         HttpPath path = httpRequest.getPath();
 
         Optional<Handler> handler = handlerMapper.findHandler(path.getDefaultPath());
-        logger.debug("handler found: {}", handler);
         if (handler.isPresent()) {
             Handler userRegistrationHandler = handler.get();
             userRegistrationHandler.service(httpRequest, httpResponse);
@@ -35,7 +34,6 @@ public class HttpRequestHandler {
         }
 
         if (method == HttpMethod.GET && path.isOnlyDefaultPath()) {
-            logger.debug("resource handle start");
             staticResourceHandler.service(httpRequest, httpResponse);
             return;
         }
