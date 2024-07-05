@@ -18,6 +18,11 @@ public class HttpResponse {
         this.body = body;
     }
 
+    public void sendRedirect(String redirectUrl) {
+        httpResponseLine.setStatus(HttpStatus.SEE_OTHER);
+        headers.setHeader(LOCATION.getName(), redirectUrl);
+    }
+
     public String getResponseLine() {
         String delimiter = " ";
         StringBuilder sb = new StringBuilder();
