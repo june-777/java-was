@@ -1,6 +1,6 @@
 package codesquad.webserver;
 
-import static codesquad.utils.StringUtils.CRLF;
+import static codesquad.utils.string.StringUtils.CRLF;
 
 import codesquad.servlet.handler.HttpRequestHandler;
 import codesquad.webserver.http.HttpRequest;

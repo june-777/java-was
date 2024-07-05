@@ -1,6 +1,7 @@
 package codesquad.servlet.handler;
 
 import codesquad.servlet.HandlerMapper;
+import codesquad.utils.time.ZonedDateTimeGenerator;
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpPath;
 import codesquad.webserver.http.HttpRequest;
@@ -16,10 +17,15 @@ public class HttpRequestHandler {
 
     private final HandlerMapper handlerMapper;
     private final StaticResourceHandler staticResourceHandler;
+    private final ZonedDateTimeGenerator zonedDateTimeGenerator;
 
-    public HttpRequestHandler(HandlerMapper handlerMapper, StaticResourceHandler staticResourceHandler) {
+    public HttpRequestHandler(HandlerMapper handlerMapper,
+                              StaticResourceHandler staticResourceHandler,
+                              ZonedDateTimeGenerator zonedDateTimeGenerator
+    ) {
         this.handlerMapper = handlerMapper;
         this.staticResourceHandler = staticResourceHandler;
+        this.zonedDateTimeGenerator = zonedDateTimeGenerator;
     }
 
     public void handle(final HttpRequest httpRequest, final HttpResponse httpResponse) throws IOException {
@@ -30,15 +36,24 @@ public class HttpRequestHandler {
         if (handler.isPresent()) {
             Handler userRegistrationHandler = handler.get();
             userRegistrationHandler.service(httpRequest, httpResponse);
+            setDefaultHeaders(httpResponse);
             return;
         }
 
         if (method == HttpMethod.GET && path.isOnlyDefaultPath()) {
             staticResourceHandler.service(httpRequest, httpResponse);
+            setDefaultHeaders(httpResponse);
             return;
         }
 
+        setDefaultHeaders(httpResponse);
         httpResponse.setBadRequest();
+    }
+
+    private void setDefaultHeaders(HttpResponse httpResponse) {
+        httpResponse.setDate(zonedDateTimeGenerator.now());
+        httpResponse.setServer();
+        httpResponse.setConnectionClose();
     }
 
 }
