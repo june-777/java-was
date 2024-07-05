@@ -65,6 +65,12 @@ public class HttpResponse {
         headers.setHeader(HeaderName.LOCATION.getName(), redirectUrl);
     }
 
+    public void setDefaultHeaders(ZonedDateTime zonedDateTime) {
+        setDate(zonedDateTime);
+        setServer();
+        setConnectionClose();
+    }
+
     public String getResponseLine() {
         String delimiter = " ";
         StringBuilder sb = new StringBuilder();

@@ -36,24 +36,18 @@ public class HttpRequestHandler {
         if (handler.isPresent()) {
             Handler userRegistrationHandler = handler.get();
             userRegistrationHandler.service(httpRequest, httpResponse);
-            setDefaultHeaders(httpResponse);
+            httpResponse.setDefaultHeaders(zonedDateTimeGenerator.now());
             return;
         }
 
         if (method == HttpMethod.GET && path.isOnlyDefaultPath()) {
             staticResourceHandler.service(httpRequest, httpResponse);
-            setDefaultHeaders(httpResponse);
+            httpResponse.setDefaultHeaders(zonedDateTimeGenerator.now());
             return;
         }
 
-        setDefaultHeaders(httpResponse);
+        httpResponse.setDefaultHeaders(zonedDateTimeGenerator.now());
         httpResponse.setBadRequest();
-    }
-
-    private void setDefaultHeaders(HttpResponse httpResponse) {
-        httpResponse.setDate(zonedDateTimeGenerator.now());
-        httpResponse.setServer();
-        httpResponse.setConnectionClose();
     }
 
 }

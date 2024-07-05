@@ -46,7 +46,9 @@ public class StaticResourceHandler implements Handler {
 
         } catch (FileNotFoundException e) {
             response.setHttpResponseLine(new HttpResponseLine(httpVersion, NOT_FOUND));
-            response.setBody(NOT_FOUND.getRepresentation().getBytes());
+            byte[] notFound = NOT_FOUND.getRepresentation().getBytes();
+            response.setBody(notFound);
+            response.setContentLength(notFound.length);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
