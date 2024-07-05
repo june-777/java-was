@@ -13,10 +13,10 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WebApplicationServer {
+public class Connector {
 
     public static final int PORT = 8080;
-    private static final Logger logger = LoggerFactory.getLogger(WebApplicationServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(Connector.class);
 
     private final HttpRequestParser httpRequestParser = new HttpRequestParser();
     private final HttpRequestHandler httpRequestHandler = new HttpRequestHandler(

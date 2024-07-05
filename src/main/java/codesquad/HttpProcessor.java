@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public class HttpProcessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(WebApplicationServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpProcessor.class);
 
     private final HttpRequestParser httpRequestParser;
     private final HttpRequestHandler httpRequestHandler;
