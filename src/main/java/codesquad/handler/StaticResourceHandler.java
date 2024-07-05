@@ -3,7 +3,6 @@ package codesquad.handler;
 import static codesquad.http.HttpStatus.NOT_FOUND;
 import static codesquad.http.HttpStatus.OK;
 
-import codesquad.http.HttpHeaders;
 import codesquad.http.HttpMediaType;
 import codesquad.http.HttpPath;
 import codesquad.http.HttpRequest;
@@ -26,7 +25,7 @@ public class StaticResourceHandler implements Handler {
     }
 
     @Override
-    public HttpResponse service(HttpRequest request, HttpResponse response) {
+    public void service(HttpRequest request, HttpResponse response) {
         HttpVersion httpVersion = request.getVersion();
         HttpPath path = request.getPath();
 
@@ -39,16 +38,16 @@ public class StaticResourceHandler implements Handler {
             HttpMediaType httpMediaType = mappingMediaTypeFileExtensionResolver.resolve(fileExtension);
             byte[] body = staticResourceReader.getFileContents(pathValue);
 
-            HttpResponseLine httpResponseLine = new HttpResponseLine(httpVersion, OK);
-            HttpHeaders httpHeaders = HttpHeaders.empty();
-            httpHeaders.setContentType(httpMediaType);
-            httpHeaders.setContentLength(body.length);
-            
-            return new HttpResponse(httpResponseLine, httpHeaders, body);
+            response.setHttpResponseLine(new HttpResponseLine(httpVersion, OK));
+            response.setContentType(httpMediaType);
+            response.setContentLength(body.length);
+            response.setBody(body);
+
         } catch (FileNotFoundException e) {
-            HttpResponseLine httpResponseLine = new HttpResponseLine(httpVersion, NOT_FOUND);
-            HttpHeaders httpHeaders = HttpHeaders.empty();
-            return new HttpResponse(httpResponseLine, httpHeaders, NOT_FOUND.getRepresentation().getBytes());
+
+            response.setHttpResponseLine(new HttpResponseLine(httpVersion, NOT_FOUND));
+            response.setBody(NOT_FOUND.getRepresentation().getBytes());
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

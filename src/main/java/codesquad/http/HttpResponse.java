@@ -1,6 +1,7 @@
 package codesquad.http;
 
 import static codesquad.http.HttpHeaders.HeaderName.LOCATION;
+import static codesquad.http.HttpStatus.BAD_REQUEST;
 import static codesquad.utils.StringUtils.CRLF;
 
 import java.util.Arrays;
@@ -8,13 +9,42 @@ import java.util.Map;
 
 public class HttpResponse {
 
-    private final HttpResponseLine httpResponseLine;
-    private final HttpHeaders headers;
-    private final byte[] body;
+    private HttpResponseLine httpResponseLine;
+    private HttpHeaders headers;
+    private byte[] body;
 
     public HttpResponse(HttpResponseLine httpResponseLine, HttpHeaders headers, byte[] body) {
         this.httpResponseLine = httpResponseLine;
         this.headers = headers;
+        this.body = body;
+    }
+
+    public static HttpResponse ok() {
+        HttpResponseLine httpResponseLine = new HttpResponseLine(HttpVersion.HTTP1_1, HttpStatus.OK);
+        HttpHeaders empty = HttpHeaders.empty();
+        byte[] bytes = new byte[0];
+        return new HttpResponse(httpResponseLine, empty, bytes);
+    }
+
+    public void setHttpResponseLine(HttpResponseLine httpResponseLine) {
+        this.httpResponseLine = httpResponseLine;
+    }
+
+    public void setContentType(HttpMediaType httpMediaType) {
+        this.headers.setContentType(httpMediaType);
+    }
+
+    public void setContentLength(int contentLength) {
+        this.headers.setContentLength(contentLength);
+    }
+
+    public void setBadRequest() {
+        this.httpResponseLine = new HttpResponseLine(HttpVersion.HTTP1_1, BAD_REQUEST);
+        this.headers = HttpHeaders.empty();
+        this.body = new byte[0];
+    }
+
+    public void setBody(byte[] body) {
         this.body = body;
     }
 

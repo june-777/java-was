@@ -5,6 +5,6 @@ import codesquad.http.HttpResponse;
 
 public interface Handler {
 
-    HttpResponse service(HttpRequest request, HttpResponse response);
+    void service(HttpRequest request, HttpResponse response);
 
 }

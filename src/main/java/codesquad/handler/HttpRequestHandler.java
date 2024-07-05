@@ -1,15 +1,10 @@
 package codesquad.handler;
 
-import static codesquad.http.HttpStatus.BAD_REQUEST;
-
 import codesquad.HandlerMapper;
-import codesquad.http.HttpHeaders;
 import codesquad.http.HttpMethod;
 import codesquad.http.HttpPath;
 import codesquad.http.HttpRequest;
 import codesquad.http.HttpResponse;
-import codesquad.http.HttpResponseLine;
-import codesquad.http.HttpVersion;
 import java.io.IOException;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -27,8 +22,7 @@ public class HttpRequestHandler {
         this.staticResourceHandler = staticResourceHandler;
     }
 
-    public HttpResponse handle(final HttpRequest httpRequest, final HttpResponse httpResponse) throws IOException {
-        HttpVersion httpVersion = httpRequest.getVersion();
+    public void handle(final HttpRequest httpRequest, final HttpResponse httpResponse) throws IOException {
         HttpMethod method = httpRequest.getMethod();
         HttpPath path = httpRequest.getPath();
 
@@ -36,15 +30,17 @@ public class HttpRequestHandler {
         logger.debug("handler found: {}", handler);
         if (handler.isPresent()) {
             Handler userRegistrationHandler = handler.get();
-            return userRegistrationHandler.service(httpRequest, httpResponse);
+            userRegistrationHandler.service(httpRequest, httpResponse);
+            return;
         }
 
         if (method == HttpMethod.GET && path.isOnlyDefaultPath()) {
-            return staticResourceHandler.service(httpRequest, httpResponse);
+            logger.debug("resource handle start");
+            staticResourceHandler.service(httpRequest, httpResponse);
+            return;
         }
 
-        HttpResponseLine httpResponseLine = new HttpResponseLine(httpVersion, BAD_REQUEST);
-        return new HttpResponse(httpResponseLine, HttpHeaders.empty(), new byte[0]);
+        httpResponse.setBadRequest();
     }
 
 }

@@ -12,7 +12,7 @@ public class UserRegistrationHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(UserRegistrationHandler.class);
 
     @Override
-    public HttpResponse service(final HttpRequest request, final HttpResponse response) {
+    public void service(final HttpRequest request, final HttpResponse response) {
         logger.debug("UserRegistrationHandler Start");
 
         Map<String, String> queryStrings = request.getQueryStrings();
@@ -26,7 +26,6 @@ public class UserRegistrationHandler implements Handler {
         response.sendRedirect("/");
 
         logger.debug("UserRegistrationHandler End");
-        return response;
     }
 
 }
