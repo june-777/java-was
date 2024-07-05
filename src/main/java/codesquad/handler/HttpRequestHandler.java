@@ -1,73 +1,50 @@
 package codesquad.handler;
 
 import static codesquad.http.HttpStatus.BAD_REQUEST;
-import static codesquad.http.HttpStatus.NOT_FOUND;
-import static codesquad.http.HttpStatus.OK;
 
+import codesquad.HandlerMapper;
 import codesquad.http.HttpHeaders;
-import codesquad.http.HttpMediaType;
 import codesquad.http.HttpMethod;
 import codesquad.http.HttpPath;
 import codesquad.http.HttpRequest;
 import codesquad.http.HttpResponse;
+import codesquad.http.HttpResponseLine;
 import codesquad.http.HttpVersion;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpRequestHandler {
 
-    private final StaticResourceReader staticResourceReader;
-    private final MappingMediaTypeFileExtensionResolver mappingMediaTypeFileExtensionResolver;
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequestHandler.class);
 
-    public HttpRequestHandler(StaticResourceReader staticResourceReader,
-                              MappingMediaTypeFileExtensionResolver mappingMediaTypeFileExtensionResolver
-    ) {
-        this.staticResourceReader = staticResourceReader;
-        this.mappingMediaTypeFileExtensionResolver = mappingMediaTypeFileExtensionResolver;
+    private final HandlerMapper handlerMapper;
+    private final StaticResourceHandler staticResourceHandler;
+
+    public HttpRequestHandler(HandlerMapper handlerMapper, StaticResourceHandler staticResourceHandler) {
+        this.handlerMapper = handlerMapper;
+        this.staticResourceHandler = staticResourceHandler;
     }
 
-    public HttpResponse handle(final HttpRequest httpRequest) throws IOException {
-        // TODO: reuqetURL 이 API인지, 정적 리소스 요청인지 구분하는 로직 필요
+    public HttpResponse handle(final HttpRequest httpRequest, final HttpResponse httpResponse) throws IOException {
         HttpVersion httpVersion = httpRequest.getVersion();
         HttpMethod method = httpRequest.getMethod();
         HttpPath path = httpRequest.getPath();
 
-        if (method == HttpMethod.GET) {
-            // TODO: 정적 자원 처리
-            if (path.isOnlyDefaultPath()) {
-                try {
-                    String pathValue = path.getDefaultPath();
-                    if (path.isDirectoryPath()) {
-                        pathValue += "/index.html";
-                    }
-                    String fileExtension = getFileExtension(pathValue);
-                    HttpMediaType httpMediaType = mappingMediaTypeFileExtensionResolver.resolve(fileExtension);
-                    byte[] body = staticResourceReader.getFileContents(pathValue);
-
-                    HttpHeaders httpHeaders = HttpHeaders.empty();
-                    httpHeaders.setContentType(httpMediaType);
-                    httpHeaders.setContentLength(body.length);
-                    return new HttpResponse(httpVersion, OK, httpHeaders, body);
-                } catch (FileNotFoundException e) {
-                    HttpHeaders httpHeaders = HttpHeaders.empty();
-                    return new HttpResponse(httpVersion, NOT_FOUND, httpHeaders,
-                            NOT_FOUND.getRepresentation().getBytes());
-                }
-
-                // TODO: 동적 자원 처리 (Query String도 있는 경우)
-
-            }
+        Optional<Handler> handler = handlerMapper.findHandler(path.getDefaultPath());
+        logger.debug("handler found: {}", handler);
+        if (handler.isPresent()) {
+            Handler userRegistrationHandler = handler.get();
+            return userRegistrationHandler.service(httpRequest, httpResponse);
         }
 
-        return new HttpResponse(httpVersion, BAD_REQUEST, HttpHeaders.empty(), new byte[0]);
-    }
-
-    private String getFileExtension(String path) {
-        int lastIndexOfDot = path.lastIndexOf('.');
-        if (lastIndexOfDot == -1) {
-            return "";
+        if (method == HttpMethod.GET && path.isOnlyDefaultPath()) {
+            return staticResourceHandler.service(httpRequest, httpResponse);
         }
-        return path.substring(lastIndexOfDot + 1);
+
+        HttpResponseLine httpResponseLine = new HttpResponseLine(httpVersion, BAD_REQUEST);
+        return new HttpResponse(httpResponseLine, HttpHeaders.empty(), new byte[0]);
     }
 
 }

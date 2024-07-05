@@ -29,7 +29,7 @@ class HttpRequestParserTest {
 
     private static void assertFirstLine(HttpRequest httpRequest) {
         assertThat(httpRequest.getMethod()).isEqualTo(HttpMethod.GET);
-        assertThat(httpRequest.getPath()).isEqualTo("/index.html");
+        assertThat(httpRequest.getPath().getDefaultPath()).isEqualTo("/index.html");
         assertThat(httpRequest.getVersion()).isEqualTo(HttpVersion.HTTP1_1);
     }
 

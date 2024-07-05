@@ -2,6 +2,7 @@ package codesquad;
 
 import codesquad.handler.HttpRequestHandler;
 import codesquad.handler.MappingMediaTypeFileExtensionResolver;
+import codesquad.handler.StaticResourceHandler;
 import codesquad.handler.StaticResourceReader;
 import codesquad.http.HttpRequestParser;
 import java.io.IOException;
@@ -18,8 +19,9 @@ public class WebApplicationServer {
     private static final Logger logger = LoggerFactory.getLogger(WebApplicationServer.class);
 
     private final HttpRequestParser httpRequestParser = new HttpRequestParser();
-    private final HttpRequestHandler httpRequestHandler =
-            new HttpRequestHandler(new StaticResourceReader(), new MappingMediaTypeFileExtensionResolver());
+    private final HttpRequestHandler httpRequestHandler = new HttpRequestHandler(
+            new HandlerMapper(),
+            new StaticResourceHandler(new StaticResourceReader(), new MappingMediaTypeFileExtensionResolver()));
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     public void start() {

@@ -3,9 +3,12 @@ package codesquad;
 import static codesquad.utils.StringUtils.CRLF;
 
 import codesquad.handler.HttpRequestHandler;
+import codesquad.http.HttpHeaders;
 import codesquad.http.HttpRequest;
 import codesquad.http.HttpRequestParser;
 import codesquad.http.HttpResponse;
+import codesquad.http.HttpResponseLine;
+import codesquad.http.HttpStatus;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,9 +38,10 @@ public class HttpProcessor {
         ) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             HttpRequest httpRequest = httpRequestParser.parse(bufferedReader);
-            HttpResponse httpResponse = httpRequestHandler.handle(httpRequest);
-
-            sendResponse(outputStream, httpResponse);
+            HttpResponse httpResponse = new HttpResponse(new HttpResponseLine(httpRequest.getVersion(), HttpStatus.OK),
+                    HttpHeaders.empty(), new byte[4096]);
+            HttpResponse result = httpRequestHandler.handle(httpRequest, httpResponse);
+            sendResponse(outputStream, result);
         } catch (IOException | RuntimeException e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
