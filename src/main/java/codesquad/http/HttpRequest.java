@@ -6,24 +6,24 @@ import java.util.Optional;
 
 public class HttpRequest {
 
-    private final HttpRequestFirstLine httpRequestFirstLine;
+    private final HttpRequestLine httpRequestLine;
     private final HttpHeaders headers;
 
-    public HttpRequest(HttpRequestFirstLine httpRequestFirstLine, HttpHeaders headers) {
-        this.httpRequestFirstLine = httpRequestFirstLine;
+    public HttpRequest(HttpRequestLine httpRequestLine, HttpHeaders headers) {
+        this.httpRequestLine = httpRequestLine;
         this.headers = headers;
     }
 
     public HttpVersion getVersion() {
-        return httpRequestFirstLine.getVersion();
+        return httpRequestLine.getVersion();
     }
 
     public HttpMethod getMethod() {
-        return httpRequestFirstLine.getMethod();
+        return httpRequestLine.getMethod();
     }
 
     public HttpPath getPath() {
-        return httpRequestFirstLine.getPath();
+        return httpRequestLine.getPath();
     }
 
     public Map<String, String> getQueryStrings() {
@@ -37,6 +37,6 @@ public class HttpRequest {
 
     @Override
     public String toString() {
-        return httpRequestFirstLine + "\n" + headers;
+        return httpRequestLine + "\n" + headers;
     }
 }

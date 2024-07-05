@@ -8,7 +8,7 @@ import codesquad.HandlerMapper;
 import codesquad.http.HttpHeaders;
 import codesquad.http.HttpPath;
 import codesquad.http.HttpRequest;
-import codesquad.http.HttpRequestFirstLine;
+import codesquad.http.HttpRequestLine;
 import codesquad.http.HttpResponse;
 import codesquad.http.HttpStatus;
 import java.io.IOException;
@@ -26,7 +26,7 @@ class HttpRequestHandlerTest {
     void requestIndex() throws IOException {
         HttpResponse httpResponse = HttpResponse.ok();
         httpRequestHandler.handle(new HttpRequest(
-                new HttpRequestFirstLine(GET, HttpPath.ofOnlyDefaultPath("/index.html"), HTTP1_1),
+                new HttpRequestLine(GET, HttpPath.ofOnlyDefaultPath("/index.html"), HTTP1_1),
                 HttpHeaders.empty()), new HttpResponse(null, HttpHeaders.empty(), null)
         );
         assertThat(httpResponse.getHttpStatus()).isEqualTo(HttpStatus.OK);
@@ -37,7 +37,7 @@ class HttpRequestHandlerTest {
     void incorrectFileNameIndex() throws IOException {
         HttpResponse httpResponse = HttpResponse.ok();
         httpRequestHandler.handle(new HttpRequest(
-                new HttpRequestFirstLine(GET, HttpPath.ofOnlyDefaultPath("/indexx.html"), HTTP1_1),
+                new HttpRequestLine(GET, HttpPath.ofOnlyDefaultPath("/indexx.html"), HTTP1_1),
                 HttpHeaders.empty()), httpResponse
         );
         assertThat(httpResponse.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);

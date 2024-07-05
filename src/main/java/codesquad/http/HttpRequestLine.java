@@ -1,12 +1,12 @@
 package codesquad.http;
 
-public class HttpRequestFirstLine {
+public class HttpRequestLine {
 
     private final HttpMethod method;
     private final HttpPath path;
     private final HttpVersion version;
 
-    public HttpRequestFirstLine(HttpMethod method, HttpPath path, HttpVersion version) {
+    public HttpRequestLine(HttpMethod method, HttpPath path, HttpVersion version) {
         this.method = method;
         this.path = path;
         this.version = version;

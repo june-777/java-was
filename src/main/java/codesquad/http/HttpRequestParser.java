@@ -17,13 +17,13 @@ public class HttpRequestParser {
         String requestLine;
 
         requestLine = bufferedReader.readLine();
-        HttpRequestFirstLine firstLine = parseHttpRequestFirstLine(requestLine);
+        HttpRequestLine firstLine = parseHttpRequestFirstLine(requestLine);
         HttpHeaders headers = parseHeaders(bufferedReader);
 
         return new HttpRequest(firstLine, headers);
     }
 
-    private HttpRequestFirstLine parseHttpRequestFirstLine(String requestLine) throws UnsupportedEncodingException {
+    private HttpRequestLine parseHttpRequestFirstLine(String requestLine) throws UnsupportedEncodingException {
         logger.debug("requestLine: {}", requestLine);
         String[] startLineParts = requestLine.split(" ");
 
@@ -38,9 +38,9 @@ public class HttpRequestParser {
         String[] pathParts = defaultPath.split("\\?");
         if (pathParts.length == 1) {
             HttpPath httpPath = HttpPath.ofOnlyDefaultPath(pathParts[0]);
-            HttpRequestFirstLine httpRequestFirstLine = new HttpRequestFirstLine(method, httpPath, version);
-            logger.debug("httpRequestFirstLine: {}", httpRequestFirstLine);
-            return httpRequestFirstLine;
+            HttpRequestLine httpRequestLine = new HttpRequestLine(method, httpPath, version);
+            logger.debug("httpRequestFirstLine: {}", httpRequestLine);
+            return httpRequestLine;
         }
 
         defaultPath = pathParts[0];
@@ -56,9 +56,9 @@ public class HttpRequestParser {
         }
 
         HttpPath httpPath = HttpPath.of(defaultPath, allQueryStrings);
-        HttpRequestFirstLine httpRequestFirstLine = new HttpRequestFirstLine(method, httpPath, version);
-        logger.debug("httpRequestFirstLine: {}", httpRequestFirstLine);
-        return httpRequestFirstLine;
+        HttpRequestLine httpRequestLine = new HttpRequestLine(method, httpPath, version);
+        logger.debug("httpRequestFirstLine: {}", httpRequestLine);
+        return httpRequestLine;
     }
 
     private HttpHeaders parseHeaders(BufferedReader bufferedReader) throws IOException {
