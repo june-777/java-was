@@ -28,7 +28,6 @@ public class StaticResourceHandler implements Handler {
     public void service(HttpRequest request, HttpResponse response) {
         HttpVersion httpVersion = request.getVersion();
         HttpPath path = request.getPath();
-
         try {
             String pathValue = path.getDefaultPath();
             if (path.isDirectoryPath()) {
@@ -44,10 +43,8 @@ public class StaticResourceHandler implements Handler {
             response.setBody(body);
 
         } catch (FileNotFoundException e) {
-
             response.setHttpResponseLine(new HttpResponseLine(httpVersion, NOT_FOUND));
             response.setBody(NOT_FOUND.getRepresentation().getBytes());
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

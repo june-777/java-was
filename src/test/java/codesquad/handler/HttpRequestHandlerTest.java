@@ -24,20 +24,22 @@ class HttpRequestHandlerTest {
     @Test
     @DisplayName("[Success] /index.html로 요청을 보내면 200 OK 응답이 발생한다.")
     void requestIndex() throws IOException {
-        HttpResponse httpResponse = httpRequestHandler.handle(
-                new HttpRequest(new HttpRequestFirstLine(GET, HttpPath.ofOnlyDefaultPath("/index.html"), HTTP1_1),
-                        HttpHeaders.empty()),
-                new HttpResponse(null, null, null));
+        HttpResponse httpResponse = HttpResponse.ok();
+        httpRequestHandler.handle(new HttpRequest(
+                new HttpRequestFirstLine(GET, HttpPath.ofOnlyDefaultPath("/index.html"), HTTP1_1),
+                HttpHeaders.empty()), new HttpResponse(null, HttpHeaders.empty(), null)
+        );
         assertThat(httpResponse.getHttpStatus()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
     @DisplayName("[Success] /indexx.html로 요청을 보내면 400 응답이 발생한다.")
     void incorrectFileNameIndex() throws IOException {
-        HttpResponse httpResponse = httpRequestHandler.handle(
-                new HttpRequest(new HttpRequestFirstLine(GET, HttpPath.ofOnlyDefaultPath("/indexx.html"), HTTP1_1),
-                        HttpHeaders.empty()),
-                new HttpResponse(null, null, null));
+        HttpResponse httpResponse = HttpResponse.ok();
+        httpRequestHandler.handle(new HttpRequest(
+                new HttpRequestFirstLine(GET, HttpPath.ofOnlyDefaultPath("/indexx.html"), HTTP1_1),
+                HttpHeaders.empty()), httpResponse
+        );
         assertThat(httpResponse.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
