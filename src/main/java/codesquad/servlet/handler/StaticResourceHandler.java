@@ -1,14 +1,16 @@
-package codesquad.handler;
+package codesquad.servlet.handler;
 
-import static codesquad.http.HttpStatus.NOT_FOUND;
-import static codesquad.http.HttpStatus.OK;
+import static codesquad.webserver.http.HttpStatus.NOT_FOUND;
+import static codesquad.webserver.http.HttpStatus.OK;
 
-import codesquad.http.HttpMediaType;
-import codesquad.http.HttpPath;
-import codesquad.http.HttpRequest;
-import codesquad.http.HttpResponse;
-import codesquad.http.HttpResponseLine;
-import codesquad.http.HttpVersion;
+import codesquad.servlet.MappingMediaTypeFileExtensionResolver;
+import codesquad.servlet.StaticResourceReader;
+import codesquad.webserver.http.HttpMediaType;
+import codesquad.webserver.http.HttpPath;
+import codesquad.webserver.http.HttpRequest;
+import codesquad.webserver.http.HttpResponse;
+import codesquad.webserver.http.HttpResponseLine;
+import codesquad.webserver.http.HttpVersion;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 

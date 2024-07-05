@@ -2,6 +2,10 @@ package codesquad.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import codesquad.webserver.http.HttpMethod;
+import codesquad.webserver.http.HttpRequest;
+import codesquad.webserver.http.HttpRequestParser;
+import codesquad.webserver.http.HttpVersion;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;

@@ -1,7 +1,7 @@
-package codesquad;
+package codesquad.servlet;
 
-import codesquad.handler.Handler;
-import codesquad.handler.UserRegistrationHandler;
+import codesquad.servlet.handler.Handler;
+import codesquad.servlet.handler.UserRegistrationHandler;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;

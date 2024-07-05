@@ -1,4 +1,4 @@
-package codesquad.handler;
+package codesquad.servlet;
 
 import java.io.File;
 import java.io.FileInputStream;

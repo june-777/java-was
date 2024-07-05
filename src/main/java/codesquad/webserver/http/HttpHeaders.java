@@ -1,7 +1,7 @@
-package codesquad.http;
+package codesquad.webserver.http;
 
-import static codesquad.http.HttpHeaders.HeaderName.CONTENT_LENGTH;
-import static codesquad.http.HttpHeaders.HeaderName.CONTENT_TYPE;
+import static codesquad.webserver.http.HttpHeaders.HeaderName.CONTENT_LENGTH;
+import static codesquad.webserver.http.HttpHeaders.HeaderName.CONTENT_TYPE;
 
 import java.util.Collections;
 import java.util.HashMap;

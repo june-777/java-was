@@ -1,8 +1,8 @@
-package codesquad.handler;
+package codesquad.servlet.handler;
 
-import codesquad.http.HttpRequest;
-import codesquad.http.HttpResponse;
 import codesquad.model.User;
+import codesquad.webserver.http.HttpRequest;
+import codesquad.webserver.http.HttpResponse;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

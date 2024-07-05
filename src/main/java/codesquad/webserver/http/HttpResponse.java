@@ -1,9 +1,8 @@
-package codesquad.http;
+package codesquad.webserver.http;
 
-import static codesquad.http.HttpHeaders.HeaderName.LOCATION;
-import static codesquad.http.HttpStatus.BAD_REQUEST;
 import static codesquad.utils.StringUtils.CRLF;
 
+import codesquad.webserver.http.HttpHeaders.HeaderName;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class HttpResponse {
     }
 
     public void setBadRequest() {
-        this.httpResponseLine = new HttpResponseLine(HttpVersion.HTTP1_1, BAD_REQUEST);
+        this.httpResponseLine = new HttpResponseLine(HttpVersion.HTTP1_1, HttpStatus.BAD_REQUEST);
         this.headers = HttpHeaders.empty();
         this.body = new byte[0];
     }
@@ -50,7 +49,7 @@ public class HttpResponse {
 
     public void sendRedirect(String redirectUrl) {
         httpResponseLine.setStatus(HttpStatus.SEE_OTHER);
-        headers.setHeader(LOCATION.getName(), redirectUrl);
+        headers.setHeader(HeaderName.LOCATION.getName(), redirectUrl);
     }
 
     public String getResponseLine() {

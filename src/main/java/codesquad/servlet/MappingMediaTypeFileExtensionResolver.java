@@ -1,13 +1,13 @@
-package codesquad.handler;
+package codesquad.servlet;
 
-import static codesquad.http.SupportFileExtension.CSS;
-import static codesquad.http.SupportFileExtension.HTML;
-import static codesquad.http.SupportFileExtension.ICO;
-import static codesquad.http.SupportFileExtension.JPEG;
-import static codesquad.http.SupportFileExtension.PNG;
-import static codesquad.http.SupportFileExtension.SVG;
+import static codesquad.webserver.SupportFileExtension.CSS;
+import static codesquad.webserver.SupportFileExtension.HTML;
+import static codesquad.webserver.SupportFileExtension.ICO;
+import static codesquad.webserver.SupportFileExtension.JPEG;
+import static codesquad.webserver.SupportFileExtension.PNG;
+import static codesquad.webserver.SupportFileExtension.SVG;
 
-import codesquad.http.HttpMediaType;
+import codesquad.webserver.http.HttpMediaType;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

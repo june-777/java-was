@@ -1,11 +1,11 @@
-package codesquad;
+package codesquad.webserver;
 
 import static codesquad.utils.StringUtils.CRLF;
 
-import codesquad.handler.HttpRequestHandler;
-import codesquad.http.HttpRequest;
-import codesquad.http.HttpRequestParser;
-import codesquad.http.HttpResponse;
+import codesquad.servlet.handler.HttpRequestHandler;
+import codesquad.webserver.http.HttpRequest;
+import codesquad.webserver.http.HttpRequestParser;
+import codesquad.webserver.http.HttpResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

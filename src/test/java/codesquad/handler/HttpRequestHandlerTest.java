@@ -1,16 +1,20 @@
 package codesquad.handler;
 
-import static codesquad.http.HttpMethod.GET;
-import static codesquad.http.HttpVersion.HTTP1_1;
+import static codesquad.webserver.http.HttpMethod.GET;
+import static codesquad.webserver.http.HttpVersion.HTTP1_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import codesquad.HandlerMapper;
-import codesquad.http.HttpHeaders;
-import codesquad.http.HttpPath;
-import codesquad.http.HttpRequest;
-import codesquad.http.HttpRequestLine;
-import codesquad.http.HttpResponse;
-import codesquad.http.HttpStatus;
+import codesquad.servlet.HandlerMapper;
+import codesquad.servlet.MappingMediaTypeFileExtensionResolver;
+import codesquad.servlet.StaticResourceReader;
+import codesquad.servlet.handler.HttpRequestHandler;
+import codesquad.servlet.handler.StaticResourceHandler;
+import codesquad.webserver.http.HttpHeaders;
+import codesquad.webserver.http.HttpPath;
+import codesquad.webserver.http.HttpRequest;
+import codesquad.webserver.http.HttpRequestLine;
+import codesquad.webserver.http.HttpResponse;
+import codesquad.webserver.http.HttpStatus;
 import java.io.IOException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

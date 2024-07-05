@@ -1,10 +1,10 @@
-package codesquad.handler;
+package codesquad.servlet.handler;
 
-import codesquad.HandlerMapper;
-import codesquad.http.HttpMethod;
-import codesquad.http.HttpPath;
-import codesquad.http.HttpRequest;
-import codesquad.http.HttpResponse;
+import codesquad.servlet.HandlerMapper;
+import codesquad.webserver.http.HttpMethod;
+import codesquad.webserver.http.HttpPath;
+import codesquad.webserver.http.HttpRequest;
+import codesquad.webserver.http.HttpResponse;
 import java.io.IOException;
 import java.util.Optional;
 import org.slf4j.Logger;

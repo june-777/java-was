@@ -1,4 +1,4 @@
-package codesquad.http;
+package codesquad.webserver;
 
 public enum SupportFileExtension {
 
@@ -19,5 +19,5 @@ public enum SupportFileExtension {
     public String getName() {
         return name;
     }
-    
+
 }

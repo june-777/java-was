@@ -1,10 +1,11 @@
-package codesquad;
+package codesquad.webserver;
 
-import codesquad.handler.HttpRequestHandler;
-import codesquad.handler.MappingMediaTypeFileExtensionResolver;
-import codesquad.handler.StaticResourceHandler;
-import codesquad.handler.StaticResourceReader;
-import codesquad.http.HttpRequestParser;
+import codesquad.servlet.HandlerMapper;
+import codesquad.servlet.MappingMediaTypeFileExtensionResolver;
+import codesquad.servlet.StaticResourceReader;
+import codesquad.servlet.handler.HttpRequestHandler;
+import codesquad.servlet.handler.StaticResourceHandler;
+import codesquad.webserver.http.HttpRequestParser;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
