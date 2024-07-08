@@ -21,17 +21,15 @@ public class HttpProcessor {
 
     private final HttpRequestParser httpRequestParser;
     private final HttpRequestHandler httpRequestHandler;
-    private final Socket socket;
 
-    public HttpProcessor(HttpRequestParser httpRequestParser, HttpRequestHandler httpRequestHandler, Socket socket) {
+    public HttpProcessor(HttpRequestParser httpRequestParser, HttpRequestHandler httpRequestHandler) {
         this.httpRequestParser = httpRequestParser;
         this.httpRequestHandler = httpRequestHandler;
-        this.socket = socket;
     }
 
-    public void process() {
-        try (InputStream inputStream = socket.getInputStream();
-             OutputStream outputStream = socket.getOutputStream()
+    public void process(Socket connection) {
+        try (InputStream inputStream = connection.getInputStream();
+             OutputStream outputStream = connection.getOutputStream()
         ) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             HttpRequest httpRequest = httpRequestParser.parse(bufferedReader);
@@ -43,7 +41,7 @@ public class HttpProcessor {
             e.printStackTrace();
         } finally {
             try {
-                socket.close();
+                connection.close();
             } catch (IOException e) {
                 logger.error("Socket Close Error");
                 e.printStackTrace();
