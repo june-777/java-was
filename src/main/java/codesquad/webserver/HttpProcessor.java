@@ -51,7 +51,7 @@ public class HttpProcessor {
         }
     }
 
-    public void sendResponse(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
+    private void sendResponse(OutputStream outputStream, HttpResponse httpResponse) throws IOException {
         sendResponseLine(outputStream, httpResponse);
         sendHeaders(outputStream, httpResponse);
         sendBody(outputStream, httpResponse);
