@@ -64,11 +64,16 @@ public class HttpRequestParser {
         if (bytesRead != contentLength) {
             throw new IllegalArgumentException("Invalid content length: " + bytesRead);
         }
-        String bodyMessage = URLDecoder.decode(new String(buffer), "UTF-8");
-        Map<String, String> params = new HashMap<>();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        String bodyMessage = stringBuilder.append(buffer, 0, bytesRead).toString();
         String[] bodyParts = bodyMessage.split("&");
+
+        Map<String, String> params = new HashMap<>();
         for (String bodyPart : bodyParts) {
-            params.put(bodyPart.split("=")[0], bodyPart.split("=")[1]);
+            String[] paramNameAndValue = bodyPart.split("=");
+            params.put(URLDecoder.decode(paramNameAndValue[0], "UTF-8"),
+                    URLDecoder.decode(paramNameAndValue[1], "UTF-8"));
         }
         return new HttpRequestBody(params);
     }
