@@ -32,7 +32,7 @@ public class HttpProcessor {
              OutputStream outputStream = connection.getOutputStream()
         ) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            HttpRequest httpRequest = httpRequestMapper.parse(bufferedReader);
+            HttpRequest httpRequest = httpRequestMapper.mapFrom(bufferedReader);
             HttpResponse httpResponse = HttpResponse.ok();
             httpRequestHandler.handle(httpRequest, httpResponse);
             sendResponse(outputStream, httpResponse);

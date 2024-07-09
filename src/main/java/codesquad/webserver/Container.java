@@ -8,6 +8,7 @@ import codesquad.servlet.handler.StaticResourceHandler;
 import codesquad.utils.time.CurrentZonedDateTimeGenerator;
 import codesquad.utils.time.ZonedDateTimeGenerator;
 import codesquad.webserver.http.HttpRequestMapper;
+import codesquad.webserver.http.HttpRequestParser;
 
 public class Container {
 
@@ -16,11 +17,15 @@ public class Container {
     }
 
     private HttpProcessor httpProcessor() {
-        return new HttpProcessor(httpRequestParser(), httpRequestHandler());
+        return new HttpProcessor(httpRequestMapper(), httpRequestHandler());
     }
 
-    private HttpRequestMapper httpRequestParser() {
-        return new HttpRequestMapper();
+    private HttpRequestMapper httpRequestMapper() {
+        return new HttpRequestMapper(httpRequestParser());
+    }
+
+    private HttpRequestParser httpRequestParser() {
+        return new HttpRequestParser();
     }
 
     private HttpRequestHandler httpRequestHandler() {
