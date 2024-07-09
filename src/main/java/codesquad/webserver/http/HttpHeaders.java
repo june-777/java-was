@@ -40,6 +40,17 @@ public class HttpHeaders {
         return Collections.unmodifiableMap(headers);
     }
 
+    public int size() {
+        return headers.size();
+    }
+
+    public int getContentLength() {
+        if (headers.containsKey(CONTENT_LENGTH.getName())) {
+            return Integer.parseInt(headers.get(CONTENT_LENGTH.getName()));
+        }
+        return 0;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
