@@ -1,6 +1,6 @@
 package codesquad;
 
-import codesquad.model.User;
+import codesquad.domain.model.User;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
