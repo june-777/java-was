@@ -15,11 +15,13 @@ import codesquad.webserver.http.HttpHeaders;
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpPath;
 import codesquad.webserver.http.HttpRequest;
+import codesquad.webserver.http.HttpRequestBody;
 import codesquad.webserver.http.HttpRequestLine;
 import codesquad.webserver.http.HttpResponse;
 import codesquad.webserver.http.HttpStatus;
 import java.io.IOException;
 import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -66,10 +68,10 @@ class HttpRequestHandlerTest {
     class Describe_Registration {
 
         @Test
-        @DisplayName("[Fail] GET으로 회원가입을 시도할 경우 404 실패한다.")
+        @DisplayName("[Fail] GET으로 회원가입은 404 실패한다.")
         void GET_registration_fail() {
             // given
-            HttpRequest httpRequest = createRegistrationRequest(GET);
+            HttpRequest httpRequest = createRegistrationRequest(GET, null);
             HttpResponse httpResponse = HttpResponse.ok();
 
             // when
@@ -81,10 +83,17 @@ class HttpRequestHandlerTest {
         }
 
         @Test
-        @DisplayName("[Success] POST로 회원가입을 시도할 경우 /index.html로 리다이렉트한다.")
+        @DisplayName("[Success] POST로 회원가입은 성공하고 /index.html로 리다이렉트한다.")
         void POST_registration_success() {
             // given
-            HttpRequest httpRequest = createRegistrationRequest(POST);
+            String userId = "아이디";
+            String password = "비밀번호";
+            String name = "이름";
+            String email = "이메일@google.com";
+            HttpRequest httpRequest = createRegistrationRequest(
+                    POST,
+                    createUserRegistrationRequestBodyParams(userId, password, name, email)
+            );
             HttpResponse httpResponse = HttpResponse.ok();
 
             // when
@@ -97,14 +106,24 @@ class HttpRequestHandlerTest {
             assertThat(httpResponse.getRedirect().get()).isEqualTo("/index.html");
         }
 
-        private HttpRequest createRegistrationRequest(HttpMethod httpMethod) {
+        private HttpRequest createRegistrationRequest(HttpMethod httpMethod, Map<String, String> requestBodyParams) {
             HttpRequestLine httpRequestLine = new HttpRequestLine(httpMethod, HttpPath.of("/create", Map.of()),
                     HTTP1_1);
             HttpHeaders httpHeaders = HttpHeaders.empty();
-            return new HttpRequest(httpRequestLine, httpHeaders, null);
+            HttpRequestBody httpRequestBody = new HttpRequestBody(requestBodyParams);
+            return new HttpRequest(httpRequestLine, httpHeaders, httpRequestBody);
+        }
+
+        private Map<String, String> createUserRegistrationRequestBodyParams(String userId, String password,
+                                                                            String name, String email
+        ) {
+            HashMap<String, String> requestBodyParams = new HashMap<>();
+            requestBodyParams.put("userId", userId);
+            requestBodyParams.put("password", password);
+            requestBodyParams.put("name", name);
+            requestBodyParams.put("email", email);
+            return requestBodyParams;
         }
 
     }
-
-
 }
