@@ -23,5 +23,8 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
-    
+
+    public String getUserId() {
+        return userId;
+    }
 }

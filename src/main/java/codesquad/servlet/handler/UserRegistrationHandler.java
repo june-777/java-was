@@ -1,15 +1,21 @@
 package codesquad.servlet.handler;
 
+import codesquad.InMemoryUserStorage;
 import codesquad.model.User;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UserRegistrationHandler implements Handler {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRegistrationHandler.class);
+    private final InMemoryUserStorage inMemoryUserStorage;
 
+    public UserRegistrationHandler(InMemoryUserStorage inMemoryUserStorage) {
+        this.inMemoryUserStorage = inMemoryUserStorage;
+    }
 
     @Override
     public void service(final HttpRequest request, final HttpResponse response) {
@@ -19,7 +25,9 @@ public class UserRegistrationHandler implements Handler {
         String name = request.getBodyParamValue("name");
         String email = request.getBodyParamValue("email");
         User user = new User(userId, password, name, email);
-        logger.debug("User Registration Success = {}", user);
+        inMemoryUserStorage.save(user);
+        Optional<User> savedUser = inMemoryUserStorage.findById(user.getUserId());
+        logger.debug("User Registration Success = {}", savedUser);
         response.sendRedirect("/index.html");
     }
 
