@@ -37,6 +37,10 @@ public class HttpRequest {
         return Optional.ofNullable(header.get(headerName));
     }
 
+    public String getBodyParamValue(String paramName) {
+        return httpRequestBody.getParamValue(paramName);
+    }
+
     @Override
     public String toString() {
         return httpRequestLine + "\n" + headers + "\n" + httpRequestBody;
