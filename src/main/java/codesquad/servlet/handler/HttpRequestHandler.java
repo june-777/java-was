@@ -38,15 +38,19 @@ public class HttpRequestHandler {
             httpResponse.setDefaultHeaders(zonedDateTimeGenerator.now());
             return;
         }
-
-        if (method == HttpMethod.GET && path.isOnlyDefaultPath()) {
+        
+        if (isStaticResourceRequest(method, path)) {
             staticResourceHandler.service(httpRequest, httpResponse);
             httpResponse.setDefaultHeaders(zonedDateTimeGenerator.now());
-            return;
         }
-
-        httpResponse.setDefaultHeaders(zonedDateTimeGenerator.now());
-        httpResponse.setBadRequest();
     }
+
+    private boolean isStaticResourceRequest(HttpMethod method, HttpPath path) {
+        if (method == HttpMethod.GET) {
+            return path.hasFileExtension() || path.isDirectoryPath();
+        }
+        return false;
+    }
+
 
 }
