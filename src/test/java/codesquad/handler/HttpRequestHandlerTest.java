@@ -1,6 +1,7 @@
 package codesquad.handler;
 
 import static codesquad.webserver.http.HttpMethod.GET;
+import static codesquad.webserver.http.HttpMethod.POST;
 import static codesquad.webserver.http.HttpVersion.HTTP1_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,6 +12,7 @@ import codesquad.servlet.handler.HttpRequestHandler;
 import codesquad.servlet.handler.StaticResourceHandler;
 import codesquad.utils.FixedZonedDateTimeGenerator;
 import codesquad.webserver.http.HttpHeaders;
+import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpPath;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpRequestLine;
@@ -18,7 +20,9 @@ import codesquad.webserver.http.HttpResponse;
 import codesquad.webserver.http.HttpStatus;
 import java.io.IOException;
 import java.time.ZoneOffset;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class HttpRequestHandlerTest {
@@ -41,7 +45,7 @@ class HttpRequestHandlerTest {
         HttpResponse httpResponse = HttpResponse.ok();
         httpRequestHandler.handle(new HttpRequest(
                 new HttpRequestLine(GET, HttpPath.ofOnlyDefaultPath("/index.html"), HTTP1_1),
-                HttpHeaders.empty()), new HttpResponse(null, HttpHeaders.empty(), null)
+                HttpHeaders.empty(), null), new HttpResponse(null, HttpHeaders.empty(), null)
         );
         assertThat(httpResponse.getHttpStatus()).isEqualTo(HttpStatus.OK);
     }
@@ -52,9 +56,53 @@ class HttpRequestHandlerTest {
         HttpResponse httpResponse = HttpResponse.ok();
         httpRequestHandler.handle(new HttpRequest(
                 new HttpRequestLine(GET, HttpPath.ofOnlyDefaultPath("/indexx.html"), HTTP1_1),
-                HttpHeaders.empty()), httpResponse
+                HttpHeaders.empty(), null), httpResponse
         );
         assertThat(httpResponse.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
+    @Nested
+    @DisplayName("회원가입을 하는 기능은")
+    class Describe_Registration {
+
+        @Test
+        @DisplayName("[Fail] GET으로 회원가입을 시도할 경우 400 실패한다.")
+        void GET_registration_fail() {
+            // given
+            HttpRequest httpRequest = createRegistrationRequest(GET);
+            HttpResponse httpResponse = HttpResponse.ok();
+
+            // when
+            httpRequestHandler.handle(httpRequest, httpResponse);
+
+            // then
+            HttpStatus httpStatus = httpResponse.getHttpStatus();
+            assertThat(httpStatus).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        @DisplayName("[Success] POST로 회원가입을 시도할 경우 /index.html로 리다이렉트한다.")
+        void POST_registration_success() {
+            // given
+            HttpRequest httpRequest = createRegistrationRequest(POST);
+            HttpResponse httpResponse = HttpResponse.ok();
+
+            // when
+            httpRequestHandler.handle(httpRequest, httpResponse);
+
+            // then
+            HttpStatus httpStatus = httpResponse.getHttpStatus();
+            assertThat(httpStatus).isEqualTo(HttpStatus.FOUND);
+        }
+
+        private HttpRequest createRegistrationRequest(HttpMethod httpMethod) {
+            HttpRequestLine httpRequestLine = new HttpRequestLine(httpMethod, HttpPath.of("/create", Map.of()),
+                    HTTP1_1);
+            HttpHeaders httpHeaders = HttpHeaders.empty();
+            return new HttpRequest(httpRequestLine, httpHeaders, null);
+        }
+
+    }
+
 
 }

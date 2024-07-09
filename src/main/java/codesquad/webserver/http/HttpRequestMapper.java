@@ -9,9 +9,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpRequestParser {
+public class HttpRequestMapper {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpRequestParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequestMapper.class);
 
     public HttpRequest parse(final BufferedReader bufferedReader) throws IOException {
         String requestLine;

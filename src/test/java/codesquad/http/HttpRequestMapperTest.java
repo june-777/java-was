@@ -6,7 +6,7 @@ import codesquad.webserver.http.HttpHeaders;
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpRequestBody;
-import codesquad.webserver.http.HttpRequestParser;
+import codesquad.webserver.http.HttpRequestMapper;
 import codesquad.webserver.http.HttpVersion;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,9 +16,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class HttpRequestParserTest {
+class HttpRequestMapperTest {
 
-    HttpRequestParser httpRequestParser = new HttpRequestParser();
+    HttpRequestMapper httpRequestMapper = new HttpRequestMapper();
 
     @Test
     @DisplayName("[Success] HTTP 규약에 맞는 요청")
@@ -29,7 +29,7 @@ class HttpRequestParserTest {
                 "\r\n";
 
         BufferedReader bufferedReader = new BufferedReader(new StringReader(request));
-        HttpRequest httpRequest = httpRequestParser.parse(bufferedReader);
+        HttpRequest httpRequest = httpRequestMapper.parse(bufferedReader);
 
         assertFirstLine(httpRequest);
         assertHeaders(httpRequest);
@@ -83,7 +83,7 @@ class HttpRequestParserTest {
             BufferedReader bufferedReader = new BufferedReader(new StringReader(requestHeader));
 
             // when
-            HttpHeaders httpHeaders = httpRequestParser.parseHeaders(bufferedReader);
+            HttpHeaders httpHeaders = httpRequestMapper.parseHeaders(bufferedReader);
             // then
             Assertions.assertThat(httpHeaders.size()).isEqualTo(19);
         }
@@ -100,7 +100,7 @@ class HttpRequestParserTest {
             String requestBody = "name=JohnDoe&email=john@example.com";
             BufferedReader bufferedReader = new BufferedReader(new StringReader(requestBody));
             // when
-            HttpRequestBody httpRequestBody = httpRequestParser.parseBody(bufferedReader, requestBody.length());
+            HttpRequestBody httpRequestBody = httpRequestMapper.parseBody(bufferedReader, requestBody.length());
             // then
             assertThat(httpRequestBody.isExists()).isTrue();
             assertThat(httpRequestBody.size()).isEqualTo(2);
