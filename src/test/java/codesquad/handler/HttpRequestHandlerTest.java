@@ -66,7 +66,7 @@ class HttpRequestHandlerTest {
     class Describe_Registration {
 
         @Test
-        @DisplayName("[Fail] GET으로 회원가입을 시도할 경우 400 실패한다.")
+        @DisplayName("[Fail] GET으로 회원가입을 시도할 경우 404 실패한다.")
         void GET_registration_fail() {
             // given
             HttpRequest httpRequest = createRegistrationRequest(GET);
@@ -77,7 +77,7 @@ class HttpRequestHandlerTest {
 
             // then
             HttpStatus httpStatus = httpResponse.getHttpStatus();
-            assertThat(httpStatus).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(httpStatus).isEqualTo(HttpStatus.NOT_FOUND);
         }
 
         @Test
@@ -93,6 +93,8 @@ class HttpRequestHandlerTest {
             // then
             HttpStatus httpStatus = httpResponse.getHttpStatus();
             assertThat(httpStatus).isEqualTo(HttpStatus.FOUND);
+            assertThat(httpResponse.getRedirect()).isPresent();
+            assertThat(httpResponse.getRedirect().get()).isEqualTo("/index.html");
         }
 
         private HttpRequest createRegistrationRequest(HttpMethod httpMethod) {
