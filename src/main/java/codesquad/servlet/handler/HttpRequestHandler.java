@@ -6,7 +6,6 @@ import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpPath;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
-import java.io.IOException;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,7 @@ public class HttpRequestHandler {
         this.zonedDateTimeGenerator = zonedDateTimeGenerator;
     }
 
-    public void handle(final HttpRequest httpRequest, final HttpResponse httpResponse) throws IOException {
+    public void handle(final HttpRequest httpRequest, final HttpResponse httpResponse) {
         HttpMethod method = httpRequest.getMethod();
         HttpPath path = httpRequest.getPath();
 
