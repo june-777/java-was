@@ -1,6 +1,6 @@
 package codesquad.servlet.handler;
 
-import codesquad.servlet.HandlerMapper;
+import codesquad.servlet.handler.resource.StaticResourceHandler;
 import codesquad.utils.time.ZonedDateTimeGenerator;
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpPath;
@@ -38,7 +38,7 @@ public class HttpRequestHandler {
             httpResponse.setDefaultHeaders(zonedDateTimeGenerator.now());
             return;
         }
-        
+
         if (isStaticResourceRequest(method, path)) {
             staticResourceHandler.service(httpRequest, httpResponse);
             httpResponse.setDefaultHeaders(zonedDateTimeGenerator.now());

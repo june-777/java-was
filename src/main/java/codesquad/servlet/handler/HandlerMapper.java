@@ -1,8 +1,7 @@
-package codesquad.servlet;
+package codesquad.servlet.handler;
 
 import codesquad.domain.InMemoryUserStorage;
-import codesquad.servlet.handler.Handler;
-import codesquad.servlet.handler.UserRegistrationHandler;
+import codesquad.servlet.handler.api.UserRegistrationHandler;
 import codesquad.webserver.http.HttpMethod;
 import java.util.HashMap;
 import java.util.Map;

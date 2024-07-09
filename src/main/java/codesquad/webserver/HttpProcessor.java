@@ -4,8 +4,8 @@ import static codesquad.utils.string.StringUtils.CRLF;
 
 import codesquad.servlet.handler.HttpRequestHandler;
 import codesquad.webserver.http.HttpRequest;
-import codesquad.webserver.http.HttpRequestMapper;
 import codesquad.webserver.http.HttpResponse;
+import codesquad.webserver.parser.HttpRequestMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

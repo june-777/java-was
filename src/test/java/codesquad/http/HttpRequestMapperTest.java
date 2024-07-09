@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpRequest;
-import codesquad.webserver.http.HttpRequestMapper;
-import codesquad.webserver.http.HttpRequestParser;
 import codesquad.webserver.http.HttpVersion;
+import codesquad.webserver.parser.HttpRequestMapper;
+import codesquad.webserver.parser.HttpRequestParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;

@@ -1,14 +1,16 @@
-package codesquad.webserver;
+package codesquad.configuration;
 
-import codesquad.servlet.HandlerMapper;
-import codesquad.servlet.MappingMediaTypeFileExtensionResolver;
-import codesquad.servlet.StaticResourceReader;
+import codesquad.servlet.handler.HandlerMapper;
 import codesquad.servlet.handler.HttpRequestHandler;
-import codesquad.servlet.handler.StaticResourceHandler;
+import codesquad.servlet.handler.resource.MappingMediaTypeFileExtensionResolver;
+import codesquad.servlet.handler.resource.StaticResourceHandler;
+import codesquad.servlet.handler.resource.StaticResourceReader;
 import codesquad.utils.time.CurrentZonedDateTimeGenerator;
 import codesquad.utils.time.ZonedDateTimeGenerator;
-import codesquad.webserver.http.HttpRequestMapper;
-import codesquad.webserver.http.HttpRequestParser;
+import codesquad.webserver.Connector;
+import codesquad.webserver.HttpProcessor;
+import codesquad.webserver.parser.HttpRequestMapper;
+import codesquad.webserver.parser.HttpRequestParser;
 
 public class Container {
 

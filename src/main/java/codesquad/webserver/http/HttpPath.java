@@ -1,6 +1,6 @@
 package codesquad.webserver.http;
 
-import codesquad.webserver.SupportFileExtension;
+import codesquad.servlet.handler.resource.SupportFileExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import codesquad.webserver.http.HttpHeaders;
 import codesquad.webserver.http.HttpRequestBody;
-import codesquad.webserver.http.HttpRequestParser;
+import codesquad.webserver.parser.HttpRequestParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;

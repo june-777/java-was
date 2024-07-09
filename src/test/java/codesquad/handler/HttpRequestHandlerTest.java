@@ -5,11 +5,11 @@ import static codesquad.webserver.http.HttpMethod.POST;
 import static codesquad.webserver.http.HttpVersion.HTTP1_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import codesquad.servlet.HandlerMapper;
-import codesquad.servlet.MappingMediaTypeFileExtensionResolver;
-import codesquad.servlet.StaticResourceReader;
+import codesquad.servlet.handler.HandlerMapper;
 import codesquad.servlet.handler.HttpRequestHandler;
-import codesquad.servlet.handler.StaticResourceHandler;
+import codesquad.servlet.handler.resource.MappingMediaTypeFileExtensionResolver;
+import codesquad.servlet.handler.resource.StaticResourceHandler;
+import codesquad.servlet.handler.resource.StaticResourceReader;
 import codesquad.utils.FixedZonedDateTimeGenerator;
 import codesquad.webserver.http.HttpHeaders;
 import codesquad.webserver.http.HttpMethod;
