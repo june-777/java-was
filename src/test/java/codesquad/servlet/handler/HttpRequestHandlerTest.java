@@ -1,12 +1,10 @@
-package codesquad.handler;
+package codesquad.servlet.handler;
 
 import static codesquad.webserver.http.HttpMethod.GET;
 import static codesquad.webserver.http.HttpMethod.POST;
 import static codesquad.webserver.http.HttpVersion.HTTP1_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import codesquad.servlet.handler.HandlerMapper;
-import codesquad.servlet.handler.HttpRequestHandler;
 import codesquad.servlet.handler.resource.MappingMediaTypeFileExtensionResolver;
 import codesquad.servlet.handler.resource.StaticResourceHandler;
 import codesquad.servlet.handler.resource.StaticResourceReader;

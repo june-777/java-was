@@ -1,9 +1,7 @@
-package codesquad.http;
+package codesquad.webserver.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import codesquad.webserver.http.HttpHeaders;
-import codesquad.webserver.http.HttpRequestBody;
 import codesquad.webserver.parser.HttpRequestParser;
 import java.io.BufferedReader;
 import java.io.IOException;

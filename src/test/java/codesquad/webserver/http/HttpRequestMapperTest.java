@@ -1,11 +1,8 @@
-package codesquad.http;
+package codesquad.webserver.http;
 
 import static codesquad.utils.string.StringUtils.CRLF;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import codesquad.webserver.http.HttpMethod;
-import codesquad.webserver.http.HttpRequest;
-import codesquad.webserver.http.HttpVersion;
 import codesquad.webserver.parser.HttpRequestMapper;
 import codesquad.webserver.parser.HttpRequestParser;
 import java.io.BufferedReader;
