@@ -1,4 +1,4 @@
-package codesquad;
+package codesquad.domain;
 
 import codesquad.domain.model.User;
 import java.util.Map;

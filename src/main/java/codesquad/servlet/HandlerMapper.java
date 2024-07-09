@@ -1,6 +1,6 @@
 package codesquad.servlet;
 
-import codesquad.InMemoryUserStorage;
+import codesquad.domain.InMemoryUserStorage;
 import codesquad.servlet.handler.Handler;
 import codesquad.servlet.handler.UserRegistrationHandler;
 import codesquad.webserver.http.HttpMethod;
