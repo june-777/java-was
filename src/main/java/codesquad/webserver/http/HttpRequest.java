@@ -8,10 +8,12 @@ public class HttpRequest {
 
     private final HttpRequestLine httpRequestLine;
     private final HttpHeaders headers;
+    private HttpRequestBody httpRequestBody;
 
-    public HttpRequest(HttpRequestLine httpRequestLine, HttpHeaders headers) {
+    public HttpRequest(HttpRequestLine httpRequestLine, HttpHeaders headers, HttpRequestBody httpRequestBody) {
         this.httpRequestLine = httpRequestLine;
         this.headers = headers;
+        this.httpRequestBody = httpRequestBody;
     }
 
     public HttpVersion getVersion() {
