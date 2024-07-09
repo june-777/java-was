@@ -31,7 +31,7 @@ public class HttpRequestHandler {
         HttpMethod method = httpRequest.getMethod();
         HttpPath path = httpRequest.getPath();
 
-        Optional<Handler> handler = handlerMapper.findHandler(path.getDefaultPath());
+        Optional<Handler> handler = handlerMapper.findBy(method, path.getDefaultPath());
         if (handler.isPresent()) {
             Handler userRegistrationHandler = handler.get();
             userRegistrationHandler.service(httpRequest, httpResponse);

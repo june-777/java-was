@@ -28,7 +28,7 @@ public class HttpPath {
     }
 
     public boolean isDirectoryPath() {
-        return isOnlyDefaultPath() && !hasFileExtensionInDefaultPath();
+        return isOnlyDefaultPath() && !hasFileExtension();
     }
 
     public boolean isOnlyDefaultPath() {
@@ -43,7 +43,7 @@ public class HttpPath {
         return queryString != null && !queryString.isEmpty();
     }
 
-    private boolean hasFileExtensionInDefaultPath() {
+    public boolean hasFileExtension() {
         return Arrays.stream(SupportFileExtension.values())
                 .anyMatch(extension -> defaultPath.contains(extension.getName()));
     }

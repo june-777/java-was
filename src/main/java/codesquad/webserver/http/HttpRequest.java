@@ -39,6 +39,6 @@ public class HttpRequest {
 
     @Override
     public String toString() {
-        return httpRequestLine + "\n" + headers;
+        return httpRequestLine + "\n" + headers + "\n" + httpRequestBody;
     }
 }

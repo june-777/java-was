@@ -6,6 +6,7 @@ import static codesquad.webserver.http.HttpHeaders.HeaderName.CONTENT_TYPE;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class HttpHeaders {
 
@@ -38,6 +39,10 @@ public class HttpHeaders {
 
     public Map<String, String> getHeaders() {
         return Collections.unmodifiableMap(headers);
+    }
+
+    public Optional<String> getHeaderValue(final String name) {
+        return Optional.ofNullable(headers.get(name));
     }
 
     public int size() {
