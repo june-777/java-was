@@ -21,7 +21,7 @@ public class UserRegistrationHandler implements Handler {
         String email = queryStrings.get("email");
         User user = new User(userId, password, name, email);
         logger.debug("User Registration Success = {}", user);
-        response.sendRedirect("/");
+        response.sendRedirect("/index.html");
     }
 
 }
