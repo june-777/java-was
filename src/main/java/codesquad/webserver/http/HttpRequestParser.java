@@ -19,12 +19,16 @@ public class HttpRequestParser {
         requestLine = bufferedReader.readLine();
         HttpRequestLine firstLine = parseHttpRequestFirstLine(requestLine);
         HttpHeaders headers = parseHeaders(bufferedReader);
+        HttpRequestBody httpRequestBody = parseBody(bufferedReader, headers.getContentLength());
 
-        return new HttpRequest(firstLine, headers);
+        logger.debug("request line: {}", firstLine);
+        logger.debug("request headers: {}", headers);
+        logger.debug("request body: {}", httpRequestBody);
+
+        return new HttpRequest(firstLine, headers, httpRequestBody);
     }
 
-    private HttpRequestLine parseHttpRequestFirstLine(String requestLine) throws UnsupportedEncodingException {
-        logger.debug("requestLine: {}", requestLine);
+    public HttpRequestLine parseHttpRequestFirstLine(String requestLine) throws UnsupportedEncodingException {
         String[] startLineParts = requestLine.split(" ");
 
         if (startLineParts.length != 3) {
@@ -38,14 +42,11 @@ public class HttpRequestParser {
         String[] pathParts = defaultPath.split("\\?");
         if (pathParts.length == 1) {
             HttpPath httpPath = HttpPath.ofOnlyDefaultPath(pathParts[0]);
-            HttpRequestLine httpRequestLine = new HttpRequestLine(method, httpPath, version);
-            logger.debug("httpRequestFirstLine: {}", httpRequestLine);
-            return httpRequestLine;
+            return new HttpRequestLine(method, httpPath, version);
         }
 
         defaultPath = pathParts[0];
         String queryStrings = pathParts[1];
-        logger.debug("queryStrings: {}", queryStrings);
 
         String[] queryStringParts = queryStrings.split("&");
         Map<String, String> allQueryStrings = new HashMap<>();
@@ -56,19 +57,38 @@ public class HttpRequestParser {
         }
 
         HttpPath httpPath = HttpPath.of(defaultPath, allQueryStrings);
-        HttpRequestLine httpRequestLine = new HttpRequestLine(method, httpPath, version);
-        logger.debug("httpRequestFirstLine: {}", httpRequestLine);
-        return httpRequestLine;
+        return new HttpRequestLine(method, httpPath, version);
     }
 
-    private HttpHeaders parseHeaders(BufferedReader bufferedReader) throws IOException {
+    public HttpHeaders parseHeaders(BufferedReader bufferedReader) throws IOException {
         String requestLine;
         Map<String, String> headers = new HashMap<>();
-        while (!(requestLine = bufferedReader.readLine()).isBlank()) {
+        while ((requestLine = bufferedReader.readLine()) != null) {
+            if (requestLine.isBlank()) {
+                break;
+            }
             String[] headerParts = requestLine.split(": ", 2);
             headers.put(headerParts[0], headerParts[1]);
         }
         return HttpHeaders.of(headers);
     }
 
+    public HttpRequestBody parseBody(BufferedReader bufferedReader, int contentLength) throws IOException {
+        if (contentLength <= 0) {
+            return HttpRequestBody.ofEmpty();
+        }
+
+        char[] buffer = new char[contentLength];
+        int bytesRead = bufferedReader.read(buffer, 0, contentLength);
+        if (bytesRead != contentLength) {
+            throw new IllegalArgumentException("Invalid content length: " + bytesRead);
+        }
+        String bodyMessage = URLDecoder.decode(new String(buffer), "UTF-8");
+        Map<String, String> params = new HashMap<>();
+        String[] bodyParts = bodyMessage.split("&");
+        for (String bodyPart : bodyParts) {
+            params.put(bodyPart.split("=")[0], bodyPart.split("=")[1]);
+        }
+        return new HttpRequestBody(params);
+    }
 }
