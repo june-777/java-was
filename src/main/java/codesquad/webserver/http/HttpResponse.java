@@ -61,7 +61,7 @@ public class HttpResponse {
     }
 
     public void sendRedirect(String redirectUrl) {
-        httpResponseLine.setStatus(HttpStatus.SEE_OTHER);
+        httpResponseLine.setStatus(HttpStatus.FOUND);
         headers.setHeader(HeaderName.LOCATION.getName(), redirectUrl);
     }
 
