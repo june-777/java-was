@@ -18,11 +18,11 @@ public class HttpRequestParserTest {
     HttpRequestParser httpRequestParser = new HttpRequestParser();
 
     @Nested
-    @DisplayName("Http 헤더를 파싱하는 기능은")
+    @DisplayName("Http Request Header를 파싱하는 기능은")
     class Describe_ParseHeader {
 
         @Test
-        @DisplayName("")
+        @DisplayName("[Success] 헤더를 CRLF 기준으로 분리할 수 있다.")
         void test() throws IOException {
             // given
             String requestHeader = """
@@ -57,12 +57,12 @@ public class HttpRequestParserTest {
     }
 
     @Nested
-    @DisplayName("Http 요청 본문을 파싱하는 기능은")
+    @DisplayName("Http Request Body를 파싱하는 기능은")
     class Describe_ParseBody {
 
         @Test
-        @DisplayName("파싱하여 '&'를 기준으로 분리하고 '='를 기준으로 key, value로 나눈 HttpRequestBody를 리턴한다.")
-        void test() throws IOException {
+        @DisplayName("[Success] 파싱하여 '&'를 기준으로 분리하고 '='를 기준으로 key, value로 나눈 HttpRequestBody를 리턴한다.")
+        void httpRequestBodyTest() throws IOException {
             // given
             String requestBody = "name=JohnDoe&email=john@example.com";
             BufferedReader bufferedReader = new BufferedReader(new StringReader(requestBody));
@@ -74,5 +74,21 @@ public class HttpRequestParserTest {
             assertThat(httpRequestBody.getParamValue("name")).isEqualTo("JohnDoe");
             assertThat(httpRequestBody.getParamValue("email")).isEqualTo("john@example.com");
         }
+
+        @Test
+        @DisplayName("[Success] Request Body value에 '&'이 포함되어 있어도 파싱을 성공한다")
+        void httpRequestBodyTestWithAmpersand() throws IOException {
+            // given
+            String requestBody = "name=%26%26%26name%26&email=%26%26%26@example.com";
+            BufferedReader bufferedReader = new BufferedReader(new StringReader(requestBody));
+            // when
+            HttpRequestBody httpRequestBody = httpRequestParser.parseBody(bufferedReader, requestBody.length());
+            // then
+            assertThat(httpRequestBody.isExists()).isTrue();
+            assertThat(httpRequestBody.size()).isEqualTo(2);
+            assertThat(httpRequestBody.getParamValue("name")).isEqualTo("&&&name&");
+            assertThat(httpRequestBody.getParamValue("email")).isEqualTo("&&&@example.com");
+        }
     }
+
 }
