@@ -19,4 +19,8 @@ public class SessionStorage {
         return sessions.get(uuid);
     }
 
+    public void removeSessionValue(String uuid) {
+        sessions.remove(uuid);
+    }
+
 }
