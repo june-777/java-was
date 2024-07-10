@@ -7,6 +7,7 @@ import static codesquad.webserver.http.HttpHeaders.HeaderName.LOCATION;
 import static codesquad.webserver.http.HttpHeaders.HeaderName.SERVER;
 import static codesquad.webserver.http.HttpHeaders.HeaderName.SET_COOKIE;
 import static codesquad.webserver.http.HttpStatus.NOT_FOUND;
+import static codesquad.webserver.http.HttpStatus.UNAUTHORIZED;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -46,6 +47,13 @@ public class HttpResponse {
         byte[] notFound = NOT_FOUND.getRepresentation().getBytes();
         setHttpResponseLine(httpResponseLine);
         setBody(notFound);
+    }
+
+    public void unauthorized() {
+        HttpResponseLine httpResponseLine = new HttpResponseLine(HttpVersion.HTTP1_1, HttpStatus.UNAUTHORIZED);
+        byte[] unauthorized = UNAUTHORIZED.getRepresentation().getBytes();
+        setHttpResponseLine(httpResponseLine);
+        setBody(unauthorized);
     }
 
     public void setHttpResponseLine(HttpResponseLine httpResponseLine) {

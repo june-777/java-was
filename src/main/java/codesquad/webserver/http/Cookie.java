@@ -23,6 +23,12 @@ public class Cookie {
         this.value = value;
     }
 
+    public void expire() {
+        value = "";
+        setPath("/");
+        setMaxAge(0);
+    }
+
     public String getName() {
         return name;
     }
