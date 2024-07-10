@@ -43,7 +43,7 @@ public class UserLoginHandler implements Handler {
         cookie.setPath("/");
         response.addCookie(cookie);
         logger.debug("crated cookie: {}", cookie);
-        response.sendRedirect("/index.html");
+        response.sendRedirect("/main");
     }
 
 }
