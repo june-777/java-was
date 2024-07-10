@@ -4,7 +4,6 @@ import codesquad.domain.InMemoryUserStorage;
 import codesquad.domain.model.User;
 import codesquad.servlet.SessionStorage;
 import codesquad.servlet.handler.Handler;
-import codesquad.webserver.http.Cookie;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
 import java.util.Optional;
@@ -33,14 +32,6 @@ public class UserRegistrationHandler implements Handler {
         inMemoryUserStorage.save(user);
         Optional<User> savedUser = inMemoryUserStorage.findById(user.getUserId());
         logger.debug("saved user: {}", savedUser);
-
-        String createdSessionId = sessionStorage.createSession(user);
-        logger.debug("created session id: {}", createdSessionId);
-
-        Cookie cookie = new Cookie("sid", createdSessionId);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-        logger.debug("crated cookie: {}", cookie);
         response.sendRedirect("/index.html");
     }
 
