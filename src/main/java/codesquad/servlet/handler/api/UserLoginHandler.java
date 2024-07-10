@@ -28,7 +28,6 @@ public class UserLoginHandler implements Handler {
         String password = request.getBodyParamValue("password");
 
         logger.debug("userId = {}, password = {}", userId, password);
-        logger.debug("inMemoryUserStorage.getUsers = {}", inMemoryUserStorage.getUsers());
 
         User findUser = inMemoryUserStorage.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
