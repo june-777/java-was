@@ -1,6 +1,5 @@
 package codesquad.servlet.handler.resource;
 
-import static codesquad.webserver.http.HttpStatus.NOT_FOUND;
 import static codesquad.webserver.http.HttpStatus.OK;
 
 import codesquad.servlet.handler.Handler;
@@ -47,10 +46,7 @@ public class StaticResourceHandler implements Handler {
             response.setBody(body);
 
         } catch (FileNotFoundException e) {
-            response.setHttpResponseLine(new HttpResponseLine(httpVersion, NOT_FOUND));
-            byte[] notFound = NOT_FOUND.getRepresentation()
-                    .getBytes(); // TODO: BODY X, 중복된 코드 -> HttpResponse 에서 한 번에 처리하면 되지 않을까?
-            response.setBody(notFound);
+            response.notFound();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

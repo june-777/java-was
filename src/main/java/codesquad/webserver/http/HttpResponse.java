@@ -6,6 +6,7 @@ import static codesquad.webserver.http.HttpHeaders.HeaderName.DATE;
 import static codesquad.webserver.http.HttpHeaders.HeaderName.LOCATION;
 import static codesquad.webserver.http.HttpHeaders.HeaderName.SERVER;
 import static codesquad.webserver.http.HttpHeaders.HeaderName.SET_COOKIE;
+import static codesquad.webserver.http.HttpStatus.NOT_FOUND;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -37,7 +38,15 @@ public class HttpResponse {
         return new HttpResponse(httpResponseLine, empty, bytes);
     }
 
+
     /*---------- setter http response line ----------*/
+
+    public void notFound() {
+        HttpResponseLine httpResponseLine = new HttpResponseLine(HttpVersion.HTTP1_1, HttpStatus.NOT_FOUND);
+        byte[] notFound = NOT_FOUND.getRepresentation().getBytes();
+        setHttpResponseLine(httpResponseLine);
+        setBody(notFound);
+    }
 
     public void setHttpResponseLine(HttpResponseLine httpResponseLine) {
         this.httpResponseLine = httpResponseLine;
