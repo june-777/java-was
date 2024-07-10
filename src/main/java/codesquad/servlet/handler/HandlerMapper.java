@@ -1,6 +1,7 @@
 package codesquad.servlet.handler;
 
 import codesquad.domain.InMemoryUserStorage;
+import codesquad.servlet.SessionStorage;
 import codesquad.servlet.handler.api.UserRegistrationHandler;
 import codesquad.webserver.http.HttpMethod;
 import java.util.HashMap;
@@ -16,7 +17,11 @@ public class HandlerMapper {
         for (HttpMethod httpMethod : HttpMethod.values()) {
             handlers.put(httpMethod, new HashMap<>());
         }
-        handlers.get(HttpMethod.POST).put("/create", new UserRegistrationHandler(new InMemoryUserStorage()));
+        handlers.get(HttpMethod.POST)
+                .put("/create", new UserRegistrationHandler(
+                        new InMemoryUserStorage(),
+                        new SessionStorage())
+                );
     }
 
     public Optional<Handler> findBy(HttpMethod httpMethod, String path) {
