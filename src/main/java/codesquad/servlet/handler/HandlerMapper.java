@@ -2,6 +2,7 @@ package codesquad.servlet.handler;
 
 import codesquad.domain.InMemoryUserStorage;
 import codesquad.servlet.SessionStorage;
+import codesquad.servlet.handler.api.UserInfoHandler;
 import codesquad.servlet.handler.api.UserLoginHandler;
 import codesquad.servlet.handler.api.UserLogoutHandler;
 import codesquad.servlet.handler.api.UserRegistrationHandler;
@@ -33,8 +34,11 @@ public class HandlerMapper {
                         inMemoryUserStorage,
                         sessionStorage));
 
-        handlers.get(HttpMethod.POST)
+        handlers.get(HttpMethod.GET)
                 .put("/user/logout", new UserLogoutHandler(sessionStorage));
+
+        handlers.get(HttpMethod.GET)
+                .put("/user/info", new UserInfoHandler(sessionStorage));
     }
 
     public Optional<Handler> findBy(HttpMethod httpMethod, String path) {
