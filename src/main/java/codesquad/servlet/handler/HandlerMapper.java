@@ -39,10 +39,10 @@ public class HandlerMapper {
                 .put("/user/logout", new UserLogoutHandler(sessionStorage));
 
         handlers.get(HttpMethod.GET)
-                .put("/user/info", new UserInfoHandler(sessionStorage));
+                .put("/api/user/info", new UserInfoHandler(sessionStorage));
 
         handlers.get(HttpMethod.GET)
-                .put("/user/list", new AllUserInfoHandler(inMemoryUserStorage, sessionStorage));
+                .put("/api/user/list", new AllUserInfoHandler(inMemoryUserStorage, sessionStorage));
     }
 
     public Optional<Handler> findBy(HttpMethod httpMethod, String path) {
