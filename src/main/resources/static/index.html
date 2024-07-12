@@ -22,7 +22,7 @@
 
         // 사용자 이름 가져오기
         async function getUserName() {
-            const response = await fetch('/user/info', {
+            const response = await fetch('/api/user/info', {
                 method: 'GET',
                 credentials: 'include' // 쿠키를 포함하여 요청
             });

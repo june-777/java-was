@@ -21,7 +21,7 @@
 
         // 사용자 이름 가져오기
         async function getUserName() {
-            const response = await fetch('/user/info', {
+            const response = await fetch('/api/user/info', {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -36,7 +36,7 @@
 
         // 사용자 목록 가져오기
         async function getUserList() {
-            const response = await fetch('/user/list', {
+            const response = await fetch('/api/user/list', {
                 method: 'GET',
                 credentials: 'include'
             });
