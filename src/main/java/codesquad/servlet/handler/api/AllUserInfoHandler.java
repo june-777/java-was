@@ -4,7 +4,6 @@ import codesquad.domain.InMemoryUserStorage;
 import codesquad.domain.model.User;
 import codesquad.servlet.SessionStorage;
 import codesquad.servlet.handler.Handler;
-import codesquad.webserver.http.Cookie;
 import codesquad.webserver.http.HttpMediaType;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
@@ -27,14 +26,14 @@ public class AllUserInfoHandler implements Handler {
     @Override
     public void service(HttpRequest request, HttpResponse response) {
         logger.debug("AllUserInfoHandler start");
-        // 사용자 인증
-        Cookie cookie = request.getCookie();
-        logger.debug("cookie: {}", cookie);
-        if (cookie == null || !cookie.getName().equals("sid")) {
-            response.unauthorized();
-            return;
-        }
-        // TODO: 쿠키값과 세션값 검증 로직
+//        // 사용자 인증
+//        Cookie cookie = request.getCookie();
+//        logger.debug("cookie: {}", cookie);
+//        if (cookie == null || !cookie.getName().equals("sid")) {
+//            response.unauthorized();
+//            return;
+//        }
+//        // TODO: 쿠키값과 세션값 검증 로직
 
         List<User> users = inMemoryUserStorage.findAll();
         List<UserInfo> userInfos = new ArrayList<>();
