@@ -28,8 +28,16 @@ public class SessionStorage {
         return uuid;
     }
 
+    public void deleteSession(String uuid) {
+        sessions.remove(uuid);
+    }
+
     public User getSessionValue(String uuid) {
         return sessions.get(uuid);
+    }
+
+    public boolean isExistingSession(String uuid) {
+        return sessions.containsKey(uuid);
     }
 
     public void removeSessionValue(String uuid) {
