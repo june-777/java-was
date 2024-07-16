@@ -30,7 +30,7 @@ public class UserLoginHandler implements Handler {
 
         logger.debug("userId = {}, password = {}", userId, password);
 
-        User findUser = inMemoryUserStorage.findById(userId)
+        User findUser = inMemoryUserStorage.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
 
         if (!findUser.getPassword().equals(password)) {

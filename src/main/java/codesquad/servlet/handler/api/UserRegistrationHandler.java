@@ -42,7 +42,7 @@ public class UserRegistrationHandler implements Handler {
 
         User user = new User(userId, password, name, email);
         inMemoryUserStorage.save(user);
-        Optional<User> savedUser = inMemoryUserStorage.findById(user.getUserId());
+        Optional<User> savedUser = inMemoryUserStorage.findByUserId(user.getUserId());
         logger.debug("saved user: {}", savedUser);
         response.sendRedirect("/index.html");
     }
