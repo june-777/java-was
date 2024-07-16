@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +53,33 @@ public class UserDao {
             throw e;
         } catch (SQLException e) {
             logger.debug("[Database Connection Exception]", e);
+            throw new InvalidDataSourceException(e);
+        }
+    }
+
+    public Optional<User> selectById(Long id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+
+        try (Connection connection = databaseConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setLong(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = new User(
+                            resultSet.getString("user_id"),
+                            resultSet.getString("password"),
+                            resultSet.getString("name"),
+                            resultSet.getString("email"));
+                    user.setPrimaryKey(resultSet.getLong("id"));
+                    return Optional.of(user);
+                }
+                return Optional.empty();
+            }
+
+        } catch (SQLException e) {
+            logger.debug("[SQL Select Exception]", e);
             throw new InvalidDataSourceException(e);
         }
     }
