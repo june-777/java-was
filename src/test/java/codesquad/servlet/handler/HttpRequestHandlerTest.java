@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -49,15 +48,9 @@ class HttpRequestHandlerTest {
         user1 = UserFixture.createUser1();
     }
 
-    @AfterEach
-    void clean() {
-        inMemoryUserStorage.delete(user1.getUserId());
-    }
-
-
     @Test
     @DisplayName("[Success] /index.html로 요청을 보내면 200 OK 응답이 발생한다.")
-    void requestIndex() throws IOException {
+    void requestIndex() {
         HttpResponse httpResponse = HttpResponse.ok();
         httpRequestHandler.handle(new HttpRequest(
                 new HttpRequestLine(GET, HttpPath.ofOnlyDefaultPath("/index.html"), HTTP1_1),
@@ -114,6 +107,8 @@ class HttpRequestHandlerTest {
             assertThat(httpStatus).isEqualTo(HttpStatus.FOUND);
             assertThat(httpResponse.getRedirect()).isPresent();
             assertThat(httpResponse.getRedirect().get()).isEqualTo("/index.html");
+
+            cleanUsers();
         }
 
         private HttpRequest createRegistrationRequest(HttpMethod httpMethod, Map<String, String> requestBodyParams) {
@@ -133,6 +128,11 @@ class HttpRequestHandlerTest {
             requestBodyParams.put("name", name);
             requestBodyParams.put("email", email);
             return requestBodyParams;
+        }
+
+        private void cleanUsers() {
+            user1 = inMemoryUserStorage.findByUserId(user1.getUserId()).orElse(null);
+            inMemoryUserStorage.delete(user1.getId());
         }
 
     }
