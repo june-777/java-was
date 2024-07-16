@@ -14,7 +14,7 @@ public class SessionAuthFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(SessionAuthFilter.class);
     private static final List<String> AUTH_URI = List.of("/user/list", "/user/logout", "/api/user/info",
-            "/api/user/list");
+            "/api/user/list", "/article/write.html");
     private final SessionStorage sessionStorage;
 
     public SessionAuthFilter(SessionStorage sessionStorage) {
