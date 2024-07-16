@@ -5,6 +5,9 @@ import static codesquad.webserver.http.HttpMethod.POST;
 import static codesquad.webserver.http.HttpVersion.HTTP1_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import codesquad.domain.InMemoryUserStorage;
+import codesquad.domain.model.User;
+import codesquad.servlet.fixture.UserFixture;
 import codesquad.servlet.handler.resource.MappingMediaTypeFileExtensionResolver;
 import codesquad.servlet.handler.resource.StaticResourceHandler;
 import codesquad.servlet.handler.resource.StaticResourceReader;
@@ -21,6 +24,8 @@ import java.io.IOException;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,14 +35,25 @@ class HttpRequestHandlerTest {
     FixedZonedDateTimeGenerator fixedZonedDateTimeGenerator = new FixedZonedDateTimeGenerator(2000, 1, 1, 1, 1, 1, 1,
             ZoneOffset.UTC);
 
-    HttpRequestHandler httpRequestHandler = new HttpRequestHandler(
-            new HandlerMapper(),
-            new StaticResourceHandler(
-                    new StaticResourceReader(),
-                    new MappingMediaTypeFileExtensionResolver()
+    HttpRequestHandler httpRequestHandler = new HttpRequestHandler(new HandlerMapper(),
+            new StaticResourceHandler(new StaticResourceReader(), new MappingMediaTypeFileExtensionResolver()
             ),
             fixedZonedDateTimeGenerator
     );
+
+    InMemoryUserStorage inMemoryUserStorage = InMemoryUserStorage.getInstance();
+    User user1;
+
+    @BeforeEach
+    void setUp() {
+        user1 = UserFixture.createUser1();
+    }
+
+    @AfterEach
+    void clean() {
+        inMemoryUserStorage.delete(user1.getUserId());
+    }
+
 
     @Test
     @DisplayName("[Success] /index.html로 요청을 보내면 200 OK 응답이 발생한다.")
@@ -84,13 +100,9 @@ class HttpRequestHandlerTest {
         @DisplayName("[Success] POST로 회원가입은 성공하고 /index.html로 리다이렉트한다.")
         void POST_registration_success() {
             // given
-            String userId = "아이디";
-            String password = "비밀번호";
-            String name = "이름";
-            String email = "이메일@google.com";
-            HttpRequest httpRequest = createRegistrationRequest(
-                    POST,
-                    createUserRegistrationRequestBodyParams(userId, password, name, email)
+            HttpRequest httpRequest = createRegistrationRequest(POST,
+                    createUserRegistrationRequestBodyParams(user1.getUserId(), user1.getPassword(), user1.getName(),
+                            user1.getEmail())
             );
             HttpResponse httpResponse = HttpResponse.ok();
 
