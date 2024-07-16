@@ -35,4 +35,8 @@ public class InMemoryUserStorage {
         return Collections.unmodifiableList(new ArrayList<>(users.values()));
     }
 
+    public void delete(String userId) {
+        users.remove(userId);
+    }
+
 }
