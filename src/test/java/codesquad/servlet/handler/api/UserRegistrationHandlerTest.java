@@ -37,8 +37,8 @@ class UserRegistrationHandlerTest {
 
     @AfterEach
     void clean() {
-        user1 = inMemoryUserStorage.findByUserId(user1.getUserId()).orElse(null);
-        inMemoryUserStorage.delete(user1.getId());
+        user1 = inMemoryUserStorage.selectByUserId(user1.getUserId()).orElse(null);
+        inMemoryUserStorage.deleteById(user1.getId());
     }
 
     @Nested

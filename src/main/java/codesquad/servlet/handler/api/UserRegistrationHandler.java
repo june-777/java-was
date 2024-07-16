@@ -30,7 +30,7 @@ public class UserRegistrationHandler implements Handler {
         String name = request.getBodyParamValue("name");
         String email = request.getBodyParamValue("email");
 
-        List<User> findUsers = inMemoryUserStorage.findAll();
+        List<User> findUsers = inMemoryUserStorage.selectAll();
         for (User findUser : findUsers) {
             if (findUser.getUserId().equals(userId)) {
                 throw new IllegalArgumentException("이미 존재하는 userId (%s) 입니다.".formatted(userId));
@@ -41,8 +41,8 @@ public class UserRegistrationHandler implements Handler {
         }
 
         User user = new User(userId, password, name, email);
-        inMemoryUserStorage.save(user);
-        Optional<User> savedUser = inMemoryUserStorage.findByUserId(user.getUserId());
+        inMemoryUserStorage.insert(user);
+        Optional<User> savedUser = inMemoryUserStorage.selectById(user.getId());
         logger.debug("saved user: {}", savedUser);
         response.sendRedirect("/index.html");
     }

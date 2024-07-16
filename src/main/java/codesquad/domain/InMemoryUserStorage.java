@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
-public class InMemoryUserStorage {
+public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new ConcurrentHashMap<>();
     private final AtomicLong idGenerator = new AtomicLong();
@@ -26,13 +26,30 @@ public class InMemoryUserStorage {
         return SingletonHolder.INSTANCE;
     }
 
-    public void save(User user) {
+    @Override
+    public Long insert(User user) {
         long newId = idGenerator.incrementAndGet();
         user.setPrimaryKey(newId);
         users.putIfAbsent(newId, user);
+        return user.getId();
     }
 
-    public Optional<User> findByUserId(String userId) {
+    @Override
+    public Optional<User> selectById(Long id) {
+        return Optional.ofNullable(users.get(id));
+    }
+
+    @Override
+    public List<User> selectAll() {
+        return Collections.unmodifiableList(new ArrayList<>(users.values()));
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        users.remove(id);
+    }
+
+    public Optional<User> selectByUserId(String userId) {
         return users.values().stream()
                 .filter(isEqualsUserId(userId))
                 .findFirst();
@@ -40,14 +57,6 @@ public class InMemoryUserStorage {
 
     private Predicate<User> isEqualsUserId(String userId) {
         return user -> user.getUserId().equals(userId);
-    }
-
-    public List<User> findAll() {
-        return Collections.unmodifiableList(new ArrayList<>(users.values()));
-    }
-
-    public void delete(Long userId) {
-        users.remove(userId);
     }
 
 }

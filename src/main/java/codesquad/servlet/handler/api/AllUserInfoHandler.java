@@ -26,16 +26,7 @@ public class AllUserInfoHandler implements Handler {
     @Override
     public void service(HttpRequest request, HttpResponse response) {
         logger.debug("AllUserInfoHandler start");
-//        // 사용자 인증
-//        Cookie cookie = request.getCookie();
-//        logger.debug("cookie: {}", cookie);
-//        if (cookie == null || !cookie.getName().equals("sid")) {
-//            response.unauthorized();
-//            return;
-//        }
-//        // TODO: 쿠키값과 세션값 검증 로직
-
-        List<User> users = inMemoryUserStorage.findAll();
+        List<User> users = inMemoryUserStorage.selectAll();
         List<UserInfo> userInfos = new ArrayList<>();
         for (User user : users) {
             userInfos.add(new UserInfo(user));
