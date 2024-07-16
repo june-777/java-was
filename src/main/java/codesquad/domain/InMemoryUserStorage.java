@@ -12,6 +12,17 @@ public class InMemoryUserStorage {
 
     private final Map<String, User> users = new ConcurrentHashMap<>();
 
+    private InMemoryUserStorage() {
+    }
+
+    private static class SingletonHolder {
+        private static final InMemoryUserStorage INSTANCE = new InMemoryUserStorage();
+    }
+
+    public static InMemoryUserStorage getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
+
     public void save(User user) {
         users.putIfAbsent(user.getUserId(), user);
     }

@@ -11,6 +11,17 @@ public class SessionStorage {
 
     private final Map<String, User> sessions = new ConcurrentHashMap<>();
 
+    private SessionStorage() {
+    }
+
+    private static class SingletonHolder {
+        private static final SessionStorage INSTANCE = new SessionStorage();
+    }
+
+    public static SessionStorage getInstance() {
+        return SessionStorage.SingletonHolder.INSTANCE;
+    }
+
     public String createSession(User user) {
         String uuid = UUID.randomUUID().toString();
         sessions.put(uuid, user);

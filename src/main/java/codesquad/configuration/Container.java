@@ -1,5 +1,7 @@
 package codesquad.configuration;
 
+import codesquad.servlet.SessionStorage;
+import codesquad.servlet.filter.SessionAuthFilter;
 import codesquad.servlet.handler.HandlerMapper;
 import codesquad.servlet.handler.HttpRequestHandler;
 import codesquad.servlet.handler.resource.MappingMediaTypeFileExtensionResolver;
@@ -19,7 +21,7 @@ public class Container {
     }
 
     private HttpProcessor httpProcessor() {
-        return new HttpProcessor(httpRequestMapper(), httpRequestHandler());
+        return new HttpProcessor(httpRequestMapper(), httpRequestHandler(), sessionAuthFilter());
     }
 
     private HttpRequestMapper httpRequestMapper() {
@@ -32,6 +34,14 @@ public class Container {
 
     private HttpRequestHandler httpRequestHandler() {
         return new HttpRequestHandler(handlerMapper(), staticResourceHandler(), zonedDateTimeGenerator());
+    }
+
+    private SessionAuthFilter sessionAuthFilter() {
+        return new SessionAuthFilter(sessionStorage());
+    }
+
+    private SessionStorage sessionStorage() {
+        return SessionStorage.getInstance();
     }
 
     private HandlerMapper handlerMapper() {

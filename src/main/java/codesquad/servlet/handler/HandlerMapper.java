@@ -22,8 +22,8 @@ public class HandlerMapper {
             handlers.put(httpMethod, new HashMap<>());
         }
 
-        InMemoryUserStorage inMemoryUserStorage = new InMemoryUserStorage();
-        SessionStorage sessionStorage = new SessionStorage();
+        InMemoryUserStorage inMemoryUserStorage = InMemoryUserStorage.getInstance();
+        SessionStorage sessionStorage = SessionStorage.getInstance();
 
         handlers.get(HttpMethod.POST)
                 .put("/user/create", new UserRegistrationHandler(
