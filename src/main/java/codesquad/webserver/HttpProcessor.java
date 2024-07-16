@@ -2,9 +2,11 @@ package codesquad.webserver;
 
 import static codesquad.utils.string.StringUtils.CRLF;
 
+import codesquad.servlet.filter.SessionAuthFilter;
 import codesquad.servlet.handler.HttpRequestHandler;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
+import codesquad.webserver.http.HttpStatus;
 import codesquad.webserver.parser.HttpRequestMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,10 +23,13 @@ public class HttpProcessor {
 
     private final HttpRequestMapper httpRequestMapper;
     private final HttpRequestHandler httpRequestHandler;
+    private final SessionAuthFilter sessionAuthFilter;
 
-    public HttpProcessor(HttpRequestMapper httpRequestMapper, HttpRequestHandler httpRequestHandler) {
+    public HttpProcessor(HttpRequestMapper httpRequestMapper, HttpRequestHandler httpRequestHandler,
+                         SessionAuthFilter sessionAuthFilter) {
         this.httpRequestMapper = httpRequestMapper;
         this.httpRequestHandler = httpRequestHandler;
+        this.sessionAuthFilter = sessionAuthFilter;
     }
 
     public void process(Socket connection) {
@@ -34,7 +39,13 @@ public class HttpProcessor {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             HttpRequest httpRequest = httpRequestMapper.mapFrom(bufferedReader);
             HttpResponse httpResponse = HttpResponse.ok();
-            httpRequestHandler.handle(httpRequest, httpResponse);
+
+            sessionAuthFilter.doFilter(httpRequest, httpResponse);
+
+            if (httpResponse.getHttpStatus() == HttpStatus.OK) {
+                httpRequestHandler.handle(httpRequest, httpResponse);
+            }
+            
             sendResponse(outputStream, httpResponse);
         } catch (IOException | RuntimeException e) {
             logger.error(e.getMessage(), e);
