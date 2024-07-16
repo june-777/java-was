@@ -39,7 +39,7 @@ class SessionAuthFilterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/user/logout", "/api/user/info", "/api/user/list"})
+    @ValueSource(strings = {"/user/logout", "/api/user/info", "/api/user/list", "/article/write.html"})
     @DisplayName("[Success] 쿠키가 없다면 비인증 사용자이다.")
     void test1(String requestURI) {
         // given
@@ -52,7 +52,7 @@ class SessionAuthFilterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/user/logout", "/api/user/info", "/api/user/list"})
+    @ValueSource(strings = {"/user/logout", "/api/user/info", "/api/user/list", "/article/write.html"})
     @DisplayName("[Success] 쿠키 중 세션관련 쿠키가 없으면 비인증 사용자이다.")
     void test5(String requestURI) {
         // given
@@ -69,7 +69,7 @@ class SessionAuthFilterTest {
 
 
     @ParameterizedTest
-    @ValueSource(strings = {"/user/logout", "/api/user/info", "/api/user/list"})
+    @ValueSource(strings = {"/user/logout", "/api/user/info", "/api/user/list", "/article/write.html"})
     @DisplayName("[Success] 세션 쿠키의 값이 세션에 존재하지 않으면 비인증 사용자이다.")
     void test2(String requestURI) {
         // given
@@ -84,7 +84,7 @@ class SessionAuthFilterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/user/logout", "/api/user/info", "/api/user/list"})
+    @ValueSource(strings = {"/user/logout", "/api/user/info", "/api/user/list", "/article/write.html"})
     @DisplayName("[Success] 세션 쿠키가 존재하고, 쿠키의 값이 세션에 존재하면 인증 사용자이다.")
     void test3(String requestURI) {
         // given
