@@ -1,8 +1,7 @@
 package codesquad.servlet.handler.api;
 
-import codesquad.domain.InMemoryUserStorage;
+import codesquad.domain.UserStorage;
 import codesquad.domain.model.User;
-import codesquad.servlet.SessionStorage;
 import codesquad.servlet.handler.Handler;
 import codesquad.webserver.http.HttpMediaType;
 import codesquad.webserver.http.HttpRequest;
@@ -15,18 +14,16 @@ import org.slf4j.LoggerFactory;
 public class AllUserInfoHandler implements Handler {
 
     private static final Logger logger = LoggerFactory.getLogger(AllUserInfoHandler.class);
-    private final InMemoryUserStorage inMemoryUserStorage;
-    private final SessionStorage sessionStorage;
+    private final UserStorage userStorage;
 
-    public AllUserInfoHandler(InMemoryUserStorage inMemoryUserStorage, SessionStorage sessionStorage) {
-        this.inMemoryUserStorage = inMemoryUserStorage;
-        this.sessionStorage = sessionStorage;
+    public AllUserInfoHandler(UserStorage userStorage) {
+        this.userStorage = userStorage;
     }
-
+    
     @Override
     public void service(HttpRequest request, HttpResponse response) {
         logger.debug("AllUserInfoHandler start");
-        List<User> users = inMemoryUserStorage.selectAll();
+        List<User> users = userStorage.selectAll();
         List<UserInfo> userInfos = new ArrayList<>();
         for (User user : users) {
             userInfos.add(new UserInfo(user));
