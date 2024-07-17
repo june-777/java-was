@@ -84,6 +84,29 @@ public class UserDao implements UserStorage {
         }
     }
 
+    @Override
+    public Optional<User> selectByUserId(String userId) {
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+
+        try (Connection connection = databaseConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, userId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    User user = userMapper(resultSet);
+                    return Optional.of(user);
+                }
+                return Optional.empty();
+            }
+
+        } catch (SQLException e) {
+            logger.debug("[SQL Select Exception]", e);
+            throw new InvalidDataSourceException(e);
+        }
+    }
+
     private User userMapper(ResultSet resultSet) throws SQLException {
         User user = new User(
                 resultSet.getString("user_id"),

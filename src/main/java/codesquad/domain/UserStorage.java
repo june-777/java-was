@@ -10,8 +10,10 @@ public interface UserStorage {
 
     Optional<User> selectById(Long id);
 
+    Optional<User> selectByUserId(String userId);
+
     List<User> selectAll();
 
     void deleteById(Long id);
-    
+
 }

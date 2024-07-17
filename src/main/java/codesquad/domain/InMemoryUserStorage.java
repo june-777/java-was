@@ -49,6 +49,7 @@ public class InMemoryUserStorage implements UserStorage {
         users.remove(id);
     }
 
+    @Override
     public Optional<User> selectByUserId(String userId) {
         return users.values().stream()
                 .filter(isEqualsUserId(userId))
