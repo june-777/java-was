@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +84,28 @@ public class ArticleDao implements ArticleStorage {
         }
     }
 
+    @Override
+    public List<Article> selectAll() {
+        String sql = "SELECT * FROM article";
+        List<Article> articles = new ArrayList<>();
+
+        try (Connection connection = databaseConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    articles.add(articleMapper(resultSet));
+                }
+            }
+
+        } catch (SQLException e) {
+            logger.debug("[Database Connection Exception]", e);
+            throw new InvalidDataSourceException(e);
+        }
+
+        return articles;
+    }
+
     private Article articleMapper(ResultSet resultSet) throws SQLException {
         Long authorId = resultSet.getLong("author_id");
         String title = resultSet.getString("title");
@@ -91,5 +115,4 @@ public class ArticleDao implements ArticleStorage {
 
         return article;
     }
-
 }
