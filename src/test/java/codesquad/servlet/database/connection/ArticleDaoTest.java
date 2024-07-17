@@ -1,13 +1,12 @@
 package codesquad.servlet.database.connection;
 
-import static codesquad.servlet.database.property.DataSource.JDBC_URL;
-import static codesquad.servlet.database.property.DataSource.PASSWORD;
-import static codesquad.servlet.database.property.DataSource.USER_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import codesquad.configuration.TestDatabaseConfiguration;
 import codesquad.domain.model.Article;
 import codesquad.domain.model.User;
+import codesquad.helper.TestDatabaseExtension;
 import codesquad.servlet.database.exception.InvalidDataAccessException;
 import codesquad.servlet.database.exception.InvalidDataSourceException;
 import codesquad.servlet.database.property.DataSourceProvider;
@@ -20,20 +19,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 class ArticleDaoTest {
 
 
     @Nested
     @DisplayName("Describe_CRUD 테스트")
+    @ExtendWith(TestDatabaseExtension.class)
     class CRUD_Test {
 
-        DataSourceProvider dataSourceProvider = new DataSourceProvider(
-                JDBC_URL.getProperty(), USER_NAME.getProperty(), PASSWORD.getProperty());
-        DatabaseConnector databaseConnector = new DatabaseConnector(dataSourceProvider);
+        DatabaseConnector databaseConnector = TestDatabaseConfiguration.getDatabaseConnector();
 
-        UserDao userDao = new UserDao(databaseConnector);
-        ArticleDao articleDao = new ArticleDao(databaseConnector);
+        UserDao userDao;
+        ArticleDao articleDao;
 
         User user1;
         User user2;
@@ -43,6 +42,9 @@ class ArticleDaoTest {
 
         @BeforeEach
         void initUser() {
+            userDao = new UserDao(databaseConnector);
+            articleDao = new ArticleDao(databaseConnector);
+
             user1 = UserFixture.createUser1();
             user2 = UserFixture.createUser2();
 
@@ -56,11 +58,12 @@ class ArticleDaoTest {
         @AfterEach
         void cleanUserDatabase() {
             try {
+                articleDao.deleteById(article1.getId());
+                articleDao.deleteById(article2.getId());
+
                 userDao.deleteById(user1.getId());
                 userDao.deleteById(user2.getId());
 
-                articleDao.deleteById(article1.getId());
-                articleDao.deleteById(article2.getId());
             } catch (InvalidDataAccessException e) {
                 System.out.println("After Each Catch = " + e);
                 // ignore

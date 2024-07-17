@@ -5,8 +5,13 @@ import static codesquad.webserver.http.HttpMethod.POST;
 import static codesquad.webserver.http.HttpVersion.HTTP1_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import codesquad.domain.InMemoryUserStorage;
+import codesquad.configuration.TestDatabaseConfiguration;
+import codesquad.domain.UserStorage;
 import codesquad.domain.model.User;
+import codesquad.helper.TestDatabaseExtension;
+import codesquad.servlet.database.connection.DatabaseConnector;
+import codesquad.servlet.database.connection.UserDao;
+import codesquad.servlet.database.exception.InvalidDataAccessException;
 import codesquad.servlet.fixture.UserFixture;
 import codesquad.servlet.handler.resource.MappingMediaTypeFileExtensionResolver;
 import codesquad.servlet.handler.resource.StaticResourceHandler;
@@ -24,11 +29,14 @@ import java.io.IOException;
 import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(TestDatabaseExtension.class)
 class HttpRequestHandlerTest {
 
     FixedZonedDateTimeGenerator fixedZonedDateTimeGenerator = new FixedZonedDateTimeGenerator(2000, 1, 1, 1, 1, 1, 1,
@@ -39,14 +47,6 @@ class HttpRequestHandlerTest {
             ),
             fixedZonedDateTimeGenerator
     );
-
-    InMemoryUserStorage inMemoryUserStorage = InMemoryUserStorage.getInstance();
-    User user1;
-
-    @BeforeEach
-    void setUp() {
-        user1 = UserFixture.createUser1();
-    }
 
     @Test
     @DisplayName("[Success] /index.html로 요청을 보내면 200 OK 응답이 발생한다.")
@@ -72,7 +72,28 @@ class HttpRequestHandlerTest {
 
     @Nested
     @DisplayName("회원가입을 하는 기능은")
+    @ExtendWith(TestDatabaseExtension.class)
     class Describe_Registration {
+
+        DatabaseConnector databaseConnector = TestDatabaseConfiguration.getDatabaseConnector();
+
+        UserStorage userStorage = new UserDao(databaseConnector);
+        User user1;
+
+        @BeforeEach
+        void setUp() {
+            user1 = UserFixture.createUser1();
+        }
+
+        @AfterEach
+        void cleanUserDatabase() {
+            try {
+                userStorage.deleteById(user1.getId());
+            } catch (InvalidDataAccessException e) {
+                System.out.println("After Each Catch = " + e);
+                // ignore
+            }
+        }
 
         @Test
         @DisplayName("[Fail] GET으로 회원가입은 404 실패한다.")
@@ -131,9 +152,10 @@ class HttpRequestHandlerTest {
         }
 
         private void cleanUsers() {
-            user1 = inMemoryUserStorage.selectByUserId(user1.getUserId()).orElse(null);
-            inMemoryUserStorage.deleteById(user1.getId());
+            user1 = userStorage.selectByUserId(user1.getUserId()).orElse(null);
+            userStorage.deleteById(user1.getId());
         }
 
     }
 }
+

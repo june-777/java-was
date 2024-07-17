@@ -1,12 +1,11 @@
 package codesquad.servlet.database.connection;
 
-import static codesquad.servlet.database.property.DataSource.JDBC_URL;
-import static codesquad.servlet.database.property.DataSource.PASSWORD;
-import static codesquad.servlet.database.property.DataSource.USER_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import codesquad.configuration.TestDatabaseConfiguration;
 import codesquad.domain.model.User;
+import codesquad.helper.TestDatabaseExtension;
 import codesquad.servlet.database.exception.InvalidDataAccessException;
 import codesquad.servlet.database.exception.InvalidDataSourceException;
 import codesquad.servlet.database.property.DataSourceProvider;
@@ -17,15 +16,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 class UserDaoTest {
 
     @Nested
     @DisplayName("Describe_CRUD 테스트")
+    @ExtendWith(TestDatabaseExtension.class)
     class CRUD_Test {
-        DataSourceProvider dataSourceProvider = new DataSourceProvider(
-                JDBC_URL.getProperty(), USER_NAME.getProperty(), PASSWORD.getProperty());
-        DatabaseConnector databaseConnector = new DatabaseConnector(dataSourceProvider);
+
+        DatabaseConnector databaseConnector = TestDatabaseConfiguration.getDatabaseConnector();
 
         UserDao userDao = new UserDao(databaseConnector);
         User user1 = UserFixture.createUser1();
