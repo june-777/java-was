@@ -24,11 +24,6 @@ public class UserInfoHandler implements Handler {
         logger.debug("all session = {}", sessionStorage.getSessions());
         // 사용자 인증
         Cookie cookie = request.getCookie();
-//        logger.debug("cookie: {}", cookie);
-//        if (cookie == null || !cookie.getName().equals("sid")) {
-//            response.unauthorized();
-//            return;
-//        }
         // TODO: 쿠키값과 세션값 검증 로직
         String uuid = cookie.getValue();
         // TODO: 세션에서 가져오면 X (DB 동기화 이슈)
