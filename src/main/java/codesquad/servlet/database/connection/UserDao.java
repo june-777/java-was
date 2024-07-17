@@ -1,5 +1,6 @@
 package codesquad.servlet.database.connection;
 
+import codesquad.domain.UserStorage;
 import codesquad.domain.model.User;
 import codesquad.servlet.database.exception.InvalidDataAccessException;
 import codesquad.servlet.database.exception.InvalidDataSourceException;
@@ -8,11 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserDao {
+public class UserDao implements UserStorage {
 
     private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 
@@ -22,6 +25,7 @@ public class UserDao {
         this.databaseConnector = databaseConnector;
     }
 
+    @Override
     public Long insert(User user) {
         String sql = "INSERT INTO users (user_id, password, name, email) VALUES (?, ?, ?, ?)";
 
@@ -57,6 +61,7 @@ public class UserDao {
         }
     }
 
+    @Override
     public Optional<User> selectById(Long id) {
         String sql = "SELECT * FROM users WHERE id = ?";
 
@@ -67,12 +72,7 @@ public class UserDao {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    User user = new User(
-                            resultSet.getString("user_id"),
-                            resultSet.getString("password"),
-                            resultSet.getString("name"),
-                            resultSet.getString("email"));
-                    user.setPrimaryKey(resultSet.getLong("id"));
+                    User user = userMapper(resultSet);
                     return Optional.of(user);
                 }
                 return Optional.empty();
@@ -84,6 +84,39 @@ public class UserDao {
         }
     }
 
+    private User userMapper(ResultSet resultSet) throws SQLException {
+        User user = new User(
+                resultSet.getString("user_id"),
+                resultSet.getString("password"),
+                resultSet.getString("name"),
+                resultSet.getString("email"));
+        user.setPrimaryKey(resultSet.getLong("id"));
+        return user;
+    }
+
+    @Override
+    public List<User> selectAll() {
+        String sql = "SELECT * FROM users";
+        List<User> users = new ArrayList<>();
+
+        try (Connection connection = databaseConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    users.add(userMapper(resultSet));
+                }
+            }
+
+        } catch (SQLException e) {
+            logger.debug("[Database Connection Exception]", e);
+            throw new InvalidDataSourceException(e);
+        }
+
+        return users;
+    }
+
+    @Override
     public void deleteById(Long id) {
         if (id == null) {
             return;
