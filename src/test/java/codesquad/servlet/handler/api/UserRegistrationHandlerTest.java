@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import codesquad.domain.InMemoryUserStorage;
 import codesquad.domain.model.User;
-import codesquad.servlet.SessionStorage;
 import codesquad.servlet.fixture.UserFixture;
 import codesquad.webserver.http.HttpHeaders;
 import codesquad.webserver.http.HttpPath;
@@ -25,8 +24,7 @@ import org.junit.jupiter.api.Test;
 class UserRegistrationHandlerTest {
 
     InMemoryUserStorage inMemoryUserStorage = InMemoryUserStorage.getInstance();
-    SessionStorage sessionStorage = SessionStorage.getInstance();
-    UserRegistrationHandler userRegistrationHandler = new UserRegistrationHandler(inMemoryUserStorage, sessionStorage);
+    UserRegistrationHandler userRegistrationHandler = new UserRegistrationHandler(inMemoryUserStorage);
 
     User user1;
 

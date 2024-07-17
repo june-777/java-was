@@ -1,8 +1,7 @@
 package codesquad.servlet.handler.api;
 
-import codesquad.domain.InMemoryUserStorage;
+import codesquad.domain.UserStorage;
 import codesquad.domain.model.User;
-import codesquad.servlet.SessionStorage;
 import codesquad.servlet.handler.Handler;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
@@ -14,12 +13,10 @@ import org.slf4j.LoggerFactory;
 public class UserRegistrationHandler implements Handler {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRegistrationHandler.class);
-    private final InMemoryUserStorage inMemoryUserStorage;
-    private final SessionStorage sessionStorage;
+    private final UserStorage userStorage;
 
-    public UserRegistrationHandler(InMemoryUserStorage inMemoryUserStorage, SessionStorage sessionStorage) {
-        this.inMemoryUserStorage = inMemoryUserStorage;
-        this.sessionStorage = sessionStorage;
+    public UserRegistrationHandler(UserStorage userStorage) {
+        this.userStorage = userStorage;
     }
 
     @Override
@@ -30,7 +27,7 @@ public class UserRegistrationHandler implements Handler {
         String name = request.getBodyParamValue("name");
         String email = request.getBodyParamValue("email");
 
-        List<User> findUsers = inMemoryUserStorage.selectAll();
+        List<User> findUsers = userStorage.selectAll();
         for (User findUser : findUsers) {
             if (findUser.getUserId().equals(userId)) {
                 throw new IllegalArgumentException("이미 존재하는 userId (%s) 입니다.".formatted(userId));
@@ -41,8 +38,8 @@ public class UserRegistrationHandler implements Handler {
         }
 
         User user = new User(userId, password, name, email);
-        inMemoryUserStorage.insert(user);
-        Optional<User> savedUser = inMemoryUserStorage.selectById(user.getId());
+        userStorage.insert(user);
+        Optional<User> savedUser = userStorage.selectById(user.getId());
         logger.debug("saved user: {}", savedUser);
         response.sendRedirect("/index.html");
     }

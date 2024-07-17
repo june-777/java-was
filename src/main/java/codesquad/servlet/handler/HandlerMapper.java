@@ -26,14 +26,11 @@ public class HandlerMapper {
         SessionStorage sessionStorage = SessionStorage.getInstance();
 
         handlers.get(HttpMethod.POST)
-                .put("/user/create", new UserRegistrationHandler(
-                        inMemoryUserStorage,
-                        sessionStorage));
+                .put("/user/create", new UserRegistrationHandler(inMemoryUserStorage));
 
         handlers.get(HttpMethod.POST)
                 .put("/user/login", new UserLoginHandler(
-                        inMemoryUserStorage,
-                        sessionStorage));
+                        inMemoryUserStorage, sessionStorage));
 
         handlers.get(HttpMethod.GET)
                 .put("/user/logout", new UserLogoutHandler(sessionStorage));
