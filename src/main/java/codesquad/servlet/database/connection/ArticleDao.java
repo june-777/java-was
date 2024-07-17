@@ -115,4 +115,31 @@ public class ArticleDao implements ArticleStorage {
 
         return article;
     }
+
+    @Override
+    public void deleteById(Long id) {
+        if (id == null) {
+            return;
+        }
+
+        String sql = "DELETE FROM article WHERE id = ?";
+
+        try (Connection connection = databaseConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setLong(1, id);
+
+            int rowCounts = preparedStatement.executeUpdate();
+            if (rowCounts == 0) {
+                throw new InvalidDataAccessException("Failed to delete article from database. No rows affected");
+            }
+
+        } catch (InvalidDataAccessException e) {
+            logger.debug("[SQL Delete Exception]", e);
+            throw e;
+        } catch (SQLException e) {
+            logger.debug("[Database Connection Exception]", e);
+            throw new InvalidDataSourceException(e);
+        }
+    }
 }
