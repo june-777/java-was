@@ -11,6 +11,7 @@ import codesquad.servlet.database.exception.InvalidDataAccessException;
 import codesquad.servlet.database.exception.InvalidDataSourceException;
 import codesquad.servlet.database.property.DataSourceProvider;
 import codesquad.servlet.fixture.UserFixture;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,16 +49,13 @@ class UserDaoTest {
             Optional<User> findUser = userDao.selectById(id);
 
             assertThat(findUser).isPresent();
-            assertThat(findUser.get().getUserId()).isEqualTo(user1.getUserId());
-            assertThat(findUser.get().getName()).isEqualTo(user1.getName());
-            assertThat(findUser.get().getEmail()).isEqualTo(user1.getEmail());
-            assertThat(findUser.get().getPassword()).isEqualTo(user1.getPassword());
+            User user = findUser.get();
+            assertUser(user, user1);
         }
 
         @Test
         @DisplayName("[Success] id 값으로 Delete 하면 DB에서 삭제된다")
         void test2() {
-            // given
             Long id = userDao.insert(user1);
             userDao.deleteById(id);
 
@@ -69,6 +67,32 @@ class UserDaoTest {
         @DisplayName("[Exception] 존재하지 않는 id 값으로 Delete 하면 InvalidDataAccess 예외가 발생한다")
         void test3() {
             assertThatThrownBy(() -> userDao.deleteById(123123L)).isInstanceOf(InvalidDataAccessException.class);
+        }
+
+        @Test
+        @DisplayName("[Success] 모든 사용자를 조회한다")
+        void test4() {
+            userDao.insert(user1);
+            userDao.insert(user2);
+
+            List<User> users = userDao.selectAll();
+            assertThat(users).hasSize(2);
+            assertUser(users.get(0), user1);
+            assertUser(users.get(1), user2);
+        }
+
+        private void assertUser(User user, User expectedUser) {
+            assertThat(user.getUserId()).isEqualTo(expectedUser.getUserId());
+            assertThat(user.getName()).isEqualTo(expectedUser.getName());
+            assertThat(user.getEmail()).isEqualTo(expectedUser.getEmail());
+            assertThat(user.getPassword()).isEqualTo(expectedUser.getPassword());
+        }
+
+        @Test
+        @DisplayName("[Success] 존재하지 않는 id 값으로 사용자를 조회하면 비어있는 Optional을 반환한다")
+        void test5() {
+            Optional<User> article = userDao.selectById(12312L);
+            assertThat(article).isEmpty();
         }
     }
 
