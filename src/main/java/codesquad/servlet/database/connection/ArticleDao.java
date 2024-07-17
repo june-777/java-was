@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,4 +57,39 @@ public class ArticleDao implements ArticleStorage {
             throw new InvalidDataSourceException(e);
         }
     }
+
+    @Override
+    public Optional<Article> selectById(Long id) {
+        String sql = "SELECT * FROM article WHERE id = ?";
+
+        try (Connection connection = databaseConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setLong(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+
+                    Article article = articleMapper(resultSet);
+                    return Optional.of(article);
+                }
+                return Optional.empty();
+            }
+
+        } catch (SQLException e) {
+            logger.debug("[SQL Select Exception]", e);
+            throw new InvalidDataSourceException(e);
+        }
+    }
+
+    private Article articleMapper(ResultSet resultSet) throws SQLException {
+        Long authorId = resultSet.getLong("author_id");
+        String title = resultSet.getString("title");
+        String content = resultSet.getString("content");
+        Article article = new Article(authorId, title, content);
+        article.setPrimaryKey(resultSet.getLong("id"));
+
+        return article;
+    }
+
 }
