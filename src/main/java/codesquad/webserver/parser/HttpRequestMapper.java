@@ -9,7 +9,7 @@ import codesquad.webserver.http.HttpRequestBody;
 import codesquad.webserver.http.HttpRequestLine;
 import codesquad.webserver.http.HttpResponse;
 import codesquad.webserver.http.HttpStatus;
-import java.io.BufferedReader;
+import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,11 +25,11 @@ public class HttpRequestMapper {
         this.globalExceptionHandler = globalExceptionHandler;
     }
 
-    public HttpRequest mapFrom(BufferedReader bufferedReader, HttpResponse httpResponse) {
+    public HttpRequest mapFrom(InputStream inputStream, HttpResponse httpResponse) {
         try {
-            HttpRequestLine httpRequestLine = httpRequestParser.parseHttpRequestFirstLine(bufferedReader);
-            HttpHeaders httpHeaders = httpRequestParser.parseHeaders(bufferedReader);
-            HttpRequestBody httpRequestBody = httpRequestParser.parseBody(bufferedReader,
+            HttpRequestLine httpRequestLine = httpRequestParser.parseHttpRequestFirstLine(inputStream);
+            HttpHeaders httpHeaders = httpRequestParser.parseHeaders(inputStream);
+            HttpRequestBody httpRequestBody = httpRequestParser.parseBody(inputStream,
                     httpHeaders.getContentLength());
 
             logger.debug("http request line: {}", httpRequestLine);

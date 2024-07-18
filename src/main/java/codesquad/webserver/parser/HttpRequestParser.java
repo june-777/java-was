@@ -6,16 +6,19 @@ import codesquad.webserver.http.HttpPath;
 import codesquad.webserver.http.HttpRequestBody;
 import codesquad.webserver.http.HttpRequestLine;
 import codesquad.webserver.http.HttpVersion;
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequestParser {
 
-    public HttpRequestLine parseHttpRequestFirstLine(BufferedReader bufferedReader) throws IOException {
-        String requestLine = bufferedReader.readLine();
+    private static final String UTF_8 = "UTF-8";
+
+    public HttpRequestLine parseHttpRequestFirstLine(InputStream inputStream) throws IOException {
+        String requestLine = readLine(inputStream);
         if (requestLine == null) {
             throw new IllegalArgumentException("Invalid request line: " + requestLine);
         }
@@ -42,7 +45,7 @@ public class HttpRequestParser {
         String[] queryStringParts = queryStrings.split("&");
         Map<String, String> allQueryStrings = new HashMap<>();
         for (String queryStringPart : queryStringParts) {
-            String decodedQueryString = URLDecoder.decode(queryStringPart, "UTF-8");
+            String decodedQueryString = URLDecoder.decode(queryStringPart, UTF_8);
             String[] queryStringComponentPart = decodedQueryString.split("=");
             allQueryStrings.put(queryStringComponentPart[0], queryStringComponentPart[1]);
         }
@@ -51,41 +54,49 @@ public class HttpRequestParser {
         return new HttpRequestLine(method, httpPath, version);
     }
 
-    public HttpHeaders parseHeaders(BufferedReader bufferedReader) throws IOException {
-        String requestLine;
+    public HttpHeaders parseHeaders(InputStream inputStream) throws IOException {
+        String headerLine;
         Map<String, String> headers = new HashMap<>();
-        while ((requestLine = bufferedReader.readLine()) != null) {
-            if (requestLine.isBlank()) {
-                break;
+        while (!(headerLine = readLine(inputStream)).isEmpty()) {
+            String[] headerParts = headerLine.split(": ", 2);
+            if (headerParts.length == 2) {
+                headers.put(headerParts[0], headerParts[1]);
             }
-            String[] headerParts = requestLine.split(": ", 2);
-            headers.put(headerParts[0], headerParts[1]);
         }
         return HttpHeaders.of(headers);
     }
 
-    public HttpRequestBody parseBody(BufferedReader bufferedReader, int contentLength) throws IOException {
+    public HttpRequestBody parseBody(InputStream inputStream, int contentLength) throws IOException {
         if (contentLength <= 0) {
             return HttpRequestBody.ofEmpty();
         }
 
-        char[] buffer = new char[contentLength];
-        int bytesRead = bufferedReader.read(buffer, 0, contentLength);
-        if (bytesRead != contentLength) {
+        byte[] buffer = new byte[contentLength];
+        int bytesRead = 0;
+        int totalBytesRead = 0;
+
+        while (totalBytesRead < contentLength
+                && (bytesRead = inputStream.read(buffer, totalBytesRead, contentLength - totalBytesRead)) != -1) {
+            totalBytesRead += bytesRead;
+        }
+
+        if (totalBytesRead != contentLength) {
             throw new IllegalArgumentException("Invalid content length: " + bytesRead);
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        String bodyMessage = stringBuilder.append(buffer, 0, bytesRead).toString();
+        String bodyMessage = new String(buffer, UTF_8);
         String[] bodyParts = bodyMessage.split("&");
 
         Map<String, String> params = new HashMap<>();
         for (String bodyPart : bodyParts) {
-            String[] paramNameAndValue = bodyPart.split("=");
-            params.put(URLDecoder.decode(paramNameAndValue[0], "UTF-8"),
-                    URLDecoder.decode(paramNameAndValue[1], "UTF-8"));
+            String[] paramNameAndValue = bodyPart.split("=", 2);
+            if (paramNameAndValue.length == 2) {
+                params.put(URLDecoder.decode(paramNameAndValue[0], UTF_8),
+                        URLDecoder.decode(paramNameAndValue[1], UTF_8));
+            }
         }
         return new HttpRequestBody(params);
     }
 
 }
+
