@@ -30,13 +30,13 @@ public class GlobalExceptionHandler {
 
         HttpStatus httpStatus = clientException.getHttpStatus();
         if (httpStatus == NOT_FOUND) {
-            byte[] fileContents = staticResourceReader.getFileContents("/error/400.html");
+            byte[] fileContents = staticResourceReader.getFileContents("/error/404.html");
             httpResponse.badResponse(NOT_FOUND, fileContents);
             return;
         }
 
         if (httpStatus == BAD_REQUEST) {
-            byte[] fileContents = staticResourceReader.getFileContents("/error/404.html");
+            byte[] fileContents = staticResourceReader.getFileContents("/error/400.html");
             httpResponse.badResponse(BAD_REQUEST, fileContents);
             return;
         }
