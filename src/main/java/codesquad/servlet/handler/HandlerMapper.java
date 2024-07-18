@@ -12,6 +12,7 @@ import codesquad.servlet.database.connection.DatabaseConnector;
 import codesquad.servlet.database.connection.UserDao;
 import codesquad.servlet.database.property.DataSourceProvider;
 import codesquad.servlet.handler.api.AllUserInfoHandler;
+import codesquad.servlet.handler.api.ArticleListHandler;
 import codesquad.servlet.handler.api.ArticleWriteHandler;
 import codesquad.servlet.handler.api.UserInfoHandler;
 import codesquad.servlet.handler.api.UserLoginHandler;
@@ -26,15 +27,19 @@ public class HandlerMapper {
 
     private final Map<HttpMethod, Map<String, Handler>> handlers;
 
+
+    // TODO 생성자로 핸들러, 메서드, URL 정보를 클래스로 만들어서 그거에 대한 리스트(HttpMethod, Map<String, Handler>)를 생성자로 받음
+    // 컨테이너에서 만들어서 주입하는 식
     public HandlerMapper() {
         handlers = new HashMap<>();
         for (HttpMethod httpMethod : HttpMethod.values()) {
             handlers.put(httpMethod, new HashMap<>());
         }
 
-        DataSourceProvider dataSourceProvider =
-                new DataSourceProvider(JDBC_URL.getProperty(), USER_NAME.getProperty(), PASSWORD.getProperty());
+        DataSourceProvider dataSourceProvider = new DataSourceProvider(JDBC_URL.getProperty(), USER_NAME.getProperty(),
+                PASSWORD.getProperty());
         DatabaseConnector databaseConnector = new DatabaseConnector(dataSourceProvider);
+
         UserStorage userStorage = new UserDao(databaseConnector);
         SessionStorage sessionStorage = SessionStorage.getInstance();
         ArticleStorage articleStorage = new ArticleDao(databaseConnector);
@@ -57,6 +62,10 @@ public class HandlerMapper {
 
         handlers.get(HttpMethod.POST)
                 .put("/article", new ArticleWriteHandler(sessionStorage, articleStorage));
+
+        handlers.get(HttpMethod.GET)
+                .put("/api/articles/list", new ArticleListHandler(articleStorage, userStorage));
+        
     }
 
     public Optional<Handler> findBy(HttpMethod httpMethod, String path) {
