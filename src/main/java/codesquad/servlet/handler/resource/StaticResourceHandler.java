@@ -11,9 +11,12 @@ import codesquad.webserver.http.HttpResponseLine;
 import codesquad.webserver.http.HttpVersion;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StaticResourceHandler implements Handler {
 
+    private static final Logger logger = LoggerFactory.getLogger(StaticResourceHandler.class);
     private final StaticResourceReader staticResourceReader;
     private final MappingMediaTypeFileExtensionResolver mappingMediaTypeFileExtensionResolver;
 
@@ -38,6 +41,7 @@ public class StaticResourceHandler implements Handler {
                 }
             }
             String fileExtension = getFileExtension(pathValue);
+            logger.debug("path value = {}", pathValue);
             HttpMediaType httpMediaType = mappingMediaTypeFileExtensionResolver.resolve(fileExtension);
             byte[] body = staticResourceReader.getFileContents(pathValue);
 
@@ -46,8 +50,10 @@ public class StaticResourceHandler implements Handler {
             response.setBody(body);
 
         } catch (FileNotFoundException e) {
+            logger.error("[FileNotFoundException] - path = {}", path, e);
             response.notFound();
         } catch (IOException e) {
+            logger.error("[IOException]", e);
             throw new RuntimeException(e);
         }
     }
