@@ -6,11 +6,13 @@ import codesquad.domain.UserStorage;
 import codesquad.domain.model.Article;
 import codesquad.domain.model.Comment;
 import codesquad.domain.model.User;
+import codesquad.servlet.execption.ClientException;
 import codesquad.servlet.handler.Handler;
 import codesquad.utils.json.JsonMapper;
 import codesquad.webserver.http.HttpMediaType;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
+import codesquad.webserver.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -38,7 +40,7 @@ public class ArticleListHandler implements Handler {
         List<User> users = new ArrayList<>();
         for (Article article : articles) {
             User author = userStorage.selectById(article.getAuthorId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID 사용자입니다"));
+                    .orElseThrow(() -> new ClientException("존재하지 않는 ID 사용자입니다", HttpStatus.BAD_REQUEST));
             users.add(author);
         }
 

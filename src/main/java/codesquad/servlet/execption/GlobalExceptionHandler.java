@@ -1,6 +1,7 @@
 package codesquad.servlet.execption;
 
 import static codesquad.webserver.http.HttpStatus.BAD_REQUEST;
+import static codesquad.webserver.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static codesquad.webserver.http.HttpStatus.METHOD_NOT_ALLOWED;
 import static codesquad.webserver.http.HttpStatus.NOT_FOUND;
 
@@ -28,6 +29,12 @@ public class GlobalExceptionHandler {
             return;
         }
 
+        if (clientException.getErrorCode() == ErrorCode.ALREADY_REGISTERED_USER_ID
+                || clientException.getErrorCode() == ErrorCode.ALREADY_REGISTERED_EMAIL) {
+            httpResponse.sendRedirect("/registration/fail");
+            return;
+        }
+
         HttpStatus httpStatus = clientException.getHttpStatus();
         if (httpStatus == NOT_FOUND) {
             byte[] fileContents = staticResourceReader.getFileContents("/error/404.html");
@@ -49,6 +56,8 @@ public class GlobalExceptionHandler {
 
     public void handle(ServerException serverException, HttpResponse httpResponse) {
         logger.error(serverException.getMessage(), serverException);
+        byte[] fileContents = staticResourceReader.getFileContents("/error/500.html");
+        httpResponse.badResponse(INTERNAL_SERVER_ERROR, fileContents);
     }
 
 }

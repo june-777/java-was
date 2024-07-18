@@ -3,10 +3,13 @@ package codesquad.servlet.handler.api;
 import codesquad.domain.UserStorage;
 import codesquad.domain.model.User;
 import codesquad.servlet.SessionStorage;
+import codesquad.servlet.execption.ClientException;
+import codesquad.servlet.execption.ErrorCode;
 import codesquad.servlet.handler.Handler;
 import codesquad.webserver.http.Cookie;
 import codesquad.webserver.http.HttpRequest;
 import codesquad.webserver.http.HttpResponse;
+import codesquad.webserver.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,10 +34,10 @@ public class UserLoginHandler implements Handler {
         logger.debug("userId = {}, password = {}", userId, password);
 
         User findUser = userStorage.selectByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
+                .orElseThrow(() -> new ClientException("존재하지 않는 아이디입니다.", HttpStatus.OK, ErrorCode.INVALID_USER_LOGIN));
 
         if (!findUser.getPassword().equals(password)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new ClientException("비밀번호가 일치하지 않습니다.", HttpStatus.OK, ErrorCode.INVALID_USER_LOGIN);
         }
 
         String createdSessionId = sessionStorage.createSession(findUser);

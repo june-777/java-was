@@ -17,6 +17,13 @@ public class ClientException extends RuntimeException {
         this.httpStatus = httpStatus;
     }
 
+    public ClientException(String message, HttpStatus httpStatus, ErrorCode errorCode) {
+        super(message);
+        this.httpStatus = httpStatus;
+        this.errorCode = errorCode;
+    }
+
+
     public HttpStatus getHttpStatus() {
         return httpStatus;
     }
