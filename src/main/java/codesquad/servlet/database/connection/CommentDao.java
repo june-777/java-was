@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,5 +57,37 @@ public class CommentDao implements CommentStorage {
             logger.debug("[Database Connection Exception]", e);
             throw new InvalidDataSourceException(e);
         }
+    }
+
+    @Override
+    public List<Comment> selectByArticleId(Long articleId) {
+        String sql = "SELECT * FROM comment WHERE article_id = ?";
+
+        List<Comment> comments = new ArrayList<>();
+        try (Connection connection = databaseConnector.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setLong(1, articleId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Comment comment = commentMapper(articleId, resultSet);
+                    comments.add(comment);
+                }
+            }
+        } catch (SQLException e) {
+            logger.debug("[SQL Select Exception]", e);
+            throw new InvalidDataSourceException(e);
+        }
+
+        return comments;
+    }
+
+    private Comment commentMapper(Long articleId, ResultSet resultSet) throws SQLException {
+        Long commenterId = resultSet.getLong("commenter_id");
+        String content = resultSet.getString("content");
+        Comment comment = new Comment(commenterId, articleId, content);
+        comment.setPrimaryKey(resultSet.getLong("id"));
+        return comment;
     }
 }
