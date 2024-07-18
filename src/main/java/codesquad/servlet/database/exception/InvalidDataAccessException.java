@@ -1,8 +1,11 @@
 package codesquad.servlet.database.exception;
 
-public class InvalidDataAccessException extends IllegalArgumentException {
+import codesquad.servlet.execption.ServerException;
+import codesquad.webserver.http.HttpStatus;
+
+public class InvalidDataAccessException extends ServerException {
 
     public InvalidDataAccessException(String s) {
-        super(s);
+        super(s, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
