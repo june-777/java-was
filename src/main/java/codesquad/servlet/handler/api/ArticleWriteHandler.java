@@ -40,6 +40,7 @@ public class ArticleWriteHandler implements Handler {
         Optional<Article> saveArticle = articleStorage.selectById(id);
         logger.debug("save article = {}", saveArticle);
         logger.debug("ArticleWriteHandler end");
+        response.sendRedirect("/");
     }
 
 }
