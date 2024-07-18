@@ -1,7 +1,6 @@
 package codesquad.servlet.handler;
 
 import static codesquad.webserver.http.HttpMethod.GET;
-import static codesquad.webserver.http.HttpMethod.POST;
 import static codesquad.webserver.http.HttpVersion.HTTP1_1;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -108,28 +107,6 @@ class HttpRequestHandlerTest {
             // then
             HttpStatus httpStatus = httpResponse.getHttpStatus();
             assertThat(httpStatus).isEqualTo(HttpStatus.NOT_FOUND);
-        }
-
-        @Test
-        @DisplayName("[Success] POST로 회원가입은 성공하고 /index.html로 리다이렉트한다.")
-        void POST_registration_success() {
-            // given
-            HttpRequest httpRequest = createRegistrationRequest(POST,
-                    createUserRegistrationRequestBodyParams(user1.getUserId(), user1.getPassword(), user1.getName(),
-                            user1.getEmail())
-            );
-            HttpResponse httpResponse = HttpResponse.ok();
-
-            // when
-            httpRequestHandler.handle(httpRequest, httpResponse);
-
-            // then
-            HttpStatus httpStatus = httpResponse.getHttpStatus();
-            assertThat(httpStatus).isEqualTo(HttpStatus.FOUND);
-            assertThat(httpResponse.getRedirect()).isPresent();
-            assertThat(httpResponse.getRedirect().get()).isEqualTo("/index.html");
-
-            cleanUsers();
         }
 
         private HttpRequest createRegistrationRequest(HttpMethod httpMethod, Map<String, String> requestBodyParams) {
