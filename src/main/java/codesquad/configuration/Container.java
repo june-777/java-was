@@ -1,6 +1,7 @@
 package codesquad.configuration;
 
 import codesquad.servlet.SessionStorage;
+import codesquad.servlet.execption.GlobalExceptionHandler;
 import codesquad.servlet.filter.SessionAuthFilter;
 import codesquad.servlet.handler.HandlerMapper;
 import codesquad.servlet.handler.HttpRequestHandler;
@@ -21,7 +22,15 @@ public class Container {
     }
 
     private HttpProcessor httpProcessor() {
-        return new HttpProcessor(httpRequestMapper(), httpRequestHandler(), sessionAuthFilter());
+        return new HttpProcessor(
+                httpRequestMapper(),
+                httpRequestHandler(),
+                sessionAuthFilter(),
+                zonedDateTimeGenerator());
+    }
+
+    private GlobalExceptionHandler globalExceptionHandler() {
+        return new GlobalExceptionHandler(staticResourceReader());
     }
 
     private HttpRequestMapper httpRequestMapper() {
@@ -33,7 +42,7 @@ public class Container {
     }
 
     private HttpRequestHandler httpRequestHandler() {
-        return new HttpRequestHandler(handlerMapper(), staticResourceHandler(), zonedDateTimeGenerator());
+        return new HttpRequestHandler(handlerMapper(), staticResourceHandler(), globalExceptionHandler());
     }
 
     private SessionAuthFilter sessionAuthFilter() {
@@ -53,7 +62,7 @@ public class Container {
     }
 
     private StaticResourceReader staticResourceReader() {
-        return new StaticResourceReader();
+        return StaticResourceReader.getInstance();
     }
 
     private MappingMediaTypeFileExtensionResolver mappingMediaTypeFileExtensionResolver() {
