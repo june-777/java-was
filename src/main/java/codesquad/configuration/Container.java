@@ -34,7 +34,7 @@ public class Container {
     }
 
     private HttpRequestMapper httpRequestMapper() {
-        return new HttpRequestMapper(httpRequestParser());
+        return new HttpRequestMapper(httpRequestParser(), globalExceptionHandler());
     }
 
     private HttpRequestParser httpRequestParser() {

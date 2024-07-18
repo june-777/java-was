@@ -2,6 +2,7 @@ package codesquad.webserver;
 
 import static codesquad.utils.string.StringUtils.CRLF;
 
+import codesquad.servlet.execption.ClientException;
 import codesquad.servlet.filter.SessionAuthFilter;
 import codesquad.servlet.handler.HttpRequestHandler;
 import codesquad.utils.time.ZonedDateTimeGenerator;
@@ -41,10 +42,16 @@ public class HttpProcessor {
              OutputStream outputStream = connection.getOutputStream()
         ) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-            HttpRequest httpRequest = httpRequestMapper.mapFrom(bufferedReader);
+            HttpRequest httpRequest;
             HttpResponse httpResponse = HttpResponse.ok();
             httpResponse.setDefaultHeaders(zonedDateTimeGenerator.now());
+
+            try {
+                httpRequest = httpRequestMapper.mapFrom(bufferedReader, httpResponse);
+            } catch (ClientException e) {
+                sendResponse(outputStream, httpResponse);
+                return;
+            }
 
             sessionAuthFilter.doFilter(httpRequest, httpResponse);
             if (httpResponse.getHttpStatus() == HttpStatus.OK) {
