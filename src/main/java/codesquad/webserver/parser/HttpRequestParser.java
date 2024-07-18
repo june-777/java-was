@@ -98,5 +98,25 @@ public class HttpRequestParser {
         return new HttpRequestBody(params);
     }
 
+    private String readLine(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int currentByte;
+        while ((currentByte = inputStream.read()) != -1) {
+            if (currentByte == '\n' || currentByte == '\r') {
+                if (currentByte == '\r') {
+                    inputStream.mark(1);
+                    int nextByte = inputStream.read();
+                    if (nextByte != '\n') {
+                        inputStream.reset();
+                    }
+                }
+                break;
+            }
+            baos.write(currentByte);
+        }
+        String line = baos.toString(UTF_8);
+        return line.isEmpty() && currentByte == -1 ? null : line;
+    }
+
 }
 
