@@ -11,11 +11,11 @@ import codesquad.helper.TestDatabaseExtension;
 import codesquad.servlet.database.connection.DatabaseConnector;
 import codesquad.servlet.database.connection.UserDao;
 import codesquad.servlet.database.exception.InvalidDataAccessException;
+import codesquad.servlet.execption.GlobalExceptionHandler;
 import codesquad.servlet.fixture.UserFixture;
 import codesquad.servlet.handler.resource.MappingMediaTypeFileExtensionResolver;
 import codesquad.servlet.handler.resource.StaticResourceHandler;
 import codesquad.servlet.handler.resource.StaticResourceReader;
-import codesquad.utils.FixedZonedDateTimeGenerator;
 import codesquad.webserver.http.HttpHeaders;
 import codesquad.webserver.http.HttpMethod;
 import codesquad.webserver.http.HttpPath;
@@ -25,7 +25,6 @@ import codesquad.webserver.http.HttpRequestLine;
 import codesquad.webserver.http.HttpResponse;
 import codesquad.webserver.http.HttpStatus;
 import java.io.IOException;
-import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
@@ -38,13 +37,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(TestDatabaseExtension.class)
 class HttpRequestHandlerTest {
 
-    FixedZonedDateTimeGenerator fixedZonedDateTimeGenerator = new FixedZonedDateTimeGenerator(2000, 1, 1, 1, 1, 1, 1,
-            ZoneOffset.UTC);
-
-    HttpRequestHandler httpRequestHandler = new HttpRequestHandler(new HandlerMapper(),
-            new StaticResourceHandler(new StaticResourceReader(), new MappingMediaTypeFileExtensionResolver()
+    HttpRequestHandler httpRequestHandler = new HttpRequestHandler(HandlerMapper.getInstance(),
+            new StaticResourceHandler(StaticResourceReader.getInstance(), new MappingMediaTypeFileExtensionResolver()
             ),
-            fixedZonedDateTimeGenerator
+            new GlobalExceptionHandler(StaticResourceReader.getInstance())
     );
 
     @Test

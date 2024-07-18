@@ -54,7 +54,7 @@ public class Container {
     }
 
     private HandlerMapper handlerMapper() {
-        return new HandlerMapper();
+        return HandlerMapper.getInstance();
     }
 
     private StaticResourceHandler staticResourceHandler() {
