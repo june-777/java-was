@@ -2,6 +2,8 @@ package codesquad.servlet.handler.api;
 
 import codesquad.domain.model.Article;
 import codesquad.domain.model.User;
+import codesquad.utils.json.JsonMapper;
+import java.util.List;
 
 public class ArticleDetailResponse {
 
@@ -9,16 +11,20 @@ public class ArticleDetailResponse {
     private final String author;
     private final String title;
     private final String content;
+    private final List<CommentResponse> commentResponses;
 
-    private ArticleDetailResponse(Long id, String author, String title, String content) {
+    public ArticleDetailResponse(Long id, String author, String title, String content,
+                                 List<CommentResponse> commentResponses) {
         this.id = id;
         this.author = author;
         this.title = title;
         this.content = content;
+        this.commentResponses = commentResponses;
     }
 
-    public static ArticleDetailResponse of(Article article, User user) {
-        return new ArticleDetailResponse(article.getId(), user.getName(), article.getTitle(), article.getContent());
+    public static ArticleDetailResponse of(Article article, User user, List<CommentResponse> commentResponses) {
+        return new ArticleDetailResponse(article.getId(), user.getName(), article.getTitle(), article.getContent(),
+                commentResponses);
     }
 
     @Override
@@ -27,7 +33,8 @@ public class ArticleDetailResponse {
                 "\"id\" : \"" + id + "\"," +
                 "\"author\" : \"" + author + "\"," +
                 "\"title\" : \"" + title + "\"," +
-                "\"content\" : \"" + content + "\"" +
+                "\"content\" : \"" + content + "\"," +
+                "\"comments\" : " + JsonMapper.listToJson(commentResponses) +
                 "}";
     }
 }

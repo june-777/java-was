@@ -1,8 +1,10 @@
 package codesquad.servlet.handler.api;
 
 import codesquad.domain.ArticleStorage;
+import codesquad.domain.CommentStorage;
 import codesquad.domain.UserStorage;
 import codesquad.domain.model.Article;
+import codesquad.domain.model.Comment;
 import codesquad.domain.model.User;
 import codesquad.servlet.handler.Handler;
 import codesquad.utils.json.JsonMapper;
@@ -20,10 +22,12 @@ public class ArticleListHandler implements Handler {
 
     private final ArticleStorage articleStorage;
     private final UserStorage userStorage;
+    private final CommentStorage commentStorage;
 
-    public ArticleListHandler(ArticleStorage articleStorage, UserStorage userStorage) {
+    public ArticleListHandler(ArticleStorage articleStorage, UserStorage userStorage, CommentStorage commentStorage) {
         this.articleStorage = articleStorage;
         this.userStorage = userStorage;
+        this.commentStorage = commentStorage;
     }
 
     @Override
@@ -42,7 +46,16 @@ public class ArticleListHandler implements Handler {
         for (int idx = 0; idx < articles.size(); idx++) {
             Article article = articles.get(idx);
             User author = users.get(idx);
-            articleDetailResponses.add(ArticleDetailResponse.of(article, author));
+
+            List<CommentResponse> commentResponses = new ArrayList<>();
+            List<Comment> comments = commentStorage.selectByArticleId(article.getId());
+            for (Comment comment : comments) {
+                User commenter = userStorage.selectById(comment.getCommenterId()).orElseThrow();
+                CommentResponse commentResponse = CommentResponse.of(comment, commenter);
+                commentResponses.add(commentResponse);
+            }
+
+            articleDetailResponses.add(ArticleDetailResponse.of(article, author, commentResponses));
         }
 
         String json = JsonMapper.listToJson(articleDetailResponses);
