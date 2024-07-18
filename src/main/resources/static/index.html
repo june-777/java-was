@@ -35,6 +35,64 @@
             }
         }
 
+        let posts = []; // 전역 변수로 posts 선언
+        let currentPostIndex = 0; // 현재 표시 중인 게시글 인덱스
+
+        // 게시물 데이터를 가져오는 함수
+        async function fetchPosts() {
+            try {
+                const response = await fetch('/api/articles/list');
+                if (!response.ok) {
+                    throw new Error('서버 응답 오류');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('게시물을 가져오는 중 오류 발생:', error);
+                return [];
+            }
+        }
+
+        // 게시물을 표시하는 함수
+        function displayPost(post) {
+            const postElement = document.querySelector('.post');
+            postElement.innerHTML = `
+        <div class="post__account">
+            <p class="post__account__nickname">${post.author}</p>
+        </div>
+        <div class="post__menu">
+            <ul class="post__menu__personal">
+                <li>
+                    <button class="post__menu__btn">
+                        <img src="./img/like.svg"/>
+                    </button>
+                </li>
+                <li>
+                    <button class="post__menu__btn">
+                        <img src="./img/sendLink.svg"/>
+                    </button>
+                </li>
+            </ul>
+            <button class="post__menu__btn">
+                <img src="./img/bookMark.svg"/>
+            </button>
+        </div>
+        <h2 class="post__title">${post.title}</h2>
+        <P class="post__article">${post.content}</P>
+<!--        <p class="post__article">게시물 ID: ${post.id}</p>-->
+    `;
+
+            updateNavigationButtons();
+        }
+
+        // 네비게이션 버튼 상태 업데이트 함수
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            prevBtn.disabled = currentPostIndex === 0;
+            nextBtn.disabled = currentPostIndex === posts.length - 1;
+        }
+
         // 페이지 로드 시 실행되는 함수
         async function onLoad() {
             const isLoggedIn = checkLoginStatus();
@@ -65,6 +123,33 @@
             </li>
           `;
             }
+
+            // 게시물 데이터 가져오기 및 표시
+            posts = await fetchPosts();
+            if (posts.length > 0) {
+                currentPostIndex = 0; // 첫 번째 게시글부터 시작
+                displayPost(posts[currentPostIndex]);
+            }
+
+            // 게시물 네비게이션 설정
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPostIndex > 0) {
+                    currentPostIndex--;
+                    displayPost(posts[currentPostIndex]);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentPostIndex < posts.length - 1) {
+                    currentPostIndex++;
+                    displayPost(posts[currentPostIndex]);
+                }
+            });
+
+            updateNavigationButtons();
         }
 
         // 페이지 로드 시 onLoad 함수 실행
@@ -185,13 +270,10 @@
         <nav class="nav">
             <ul class="nav__menu">
                 <li class="nav__menu__item">
-                    <a class="nav__menu__item__btn" href="">
-                        <img
-                                class="nav__menu__item__img"
-                                src="./img/ci_chevron-left.svg"
-                        />
+                    <button class="nav__menu__item__btn" id="prevBtn">
+                        <img class="nav__menu__item__img" src="./img/ci_chevron-left.svg"/>
                         이전 글
-                    </a>
+                    </button>
                 </li>
                 <!-- 글쓰기 버튼 추가 -->
                 <li class="nav__menu__item">
@@ -201,13 +283,10 @@
                     <a class="btn btn_ghost btn_size_m">댓글 작성</a>
                 </li>
                 <li class="nav__menu__item">
-                    <a class="nav__menu__item__btn" href="">
+                    <button class="nav__menu__item__btn" id="nextBtn">
                         다음 글
-                        <img
-                                class="nav__menu__item__img"
-                                src="./img/ci_chevron-right.svg"
-                        />
-                    </a>
+                        <img class="nav__menu__item__img" src="./img/ci_chevron-right.svg"/>
+                    </button>
                 </li>
             </ul>
         </nav>
