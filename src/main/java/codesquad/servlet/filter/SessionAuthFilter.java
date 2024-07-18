@@ -41,6 +41,8 @@ public class SessionAuthFilter {
             }
 
             if (!sessionStorage.isExistingSession(cookieValue)) {
+                cookie.expire();
+                httpResponse.addCookie(cookie);
                 throw new InvalidCookieException(
                         "세션에 존재하지 않는 쿠키값입니다. Cookie={%s=%s}".formatted(cookieName, cookieValue));
             }
