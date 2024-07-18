@@ -5,13 +5,16 @@ import static codesquad.servlet.database.property.DataSource.PASSWORD;
 import static codesquad.servlet.database.property.DataSource.USER_NAME;
 
 import codesquad.domain.ArticleStorage;
+import codesquad.domain.CommentStorage;
 import codesquad.domain.UserStorage;
 import codesquad.servlet.SessionStorage;
 import codesquad.servlet.database.connection.ArticleDao;
+import codesquad.servlet.database.connection.CommentDao;
 import codesquad.servlet.database.connection.DatabaseConnector;
 import codesquad.servlet.database.connection.UserDao;
 import codesquad.servlet.database.property.DataSourceProvider;
 import codesquad.servlet.handler.api.AllUserInfoHandler;
+import codesquad.servlet.handler.api.ArticleCommentWriteHandler;
 import codesquad.servlet.handler.api.ArticleListHandler;
 import codesquad.servlet.handler.api.ArticleWriteHandler;
 import codesquad.servlet.handler.api.UserInfoHandler;
@@ -43,6 +46,7 @@ public class HandlerMapper {
         UserStorage userStorage = new UserDao(databaseConnector);
         SessionStorage sessionStorage = SessionStorage.getInstance();
         ArticleStorage articleStorage = new ArticleDao(databaseConnector);
+        CommentStorage commentStorage = new CommentDao(databaseConnector);
 
         handlers.get(HttpMethod.POST)
                 .put("/user/create", new UserRegistrationHandler(userStorage));
@@ -64,8 +68,11 @@ public class HandlerMapper {
                 .put("/article", new ArticleWriteHandler(sessionStorage, articleStorage));
 
         handlers.get(HttpMethod.GET)
-                .put("/api/articles/list", new ArticleListHandler(articleStorage, userStorage));
-        
+                .put("/api/articles/list", new ArticleListHandler(articleStorage, userStorage, commentStorage));
+
+        handlers.get(HttpMethod.POST)
+                .put("/comment", new ArticleCommentWriteHandler(articleStorage, sessionStorage, commentStorage));
+
     }
 
     public Optional<Handler> findBy(HttpMethod httpMethod, String path) {
