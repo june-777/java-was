@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -117,14 +118,14 @@ public class HttpRequestParserTest {
         void httpRequestBodyTest() throws IOException {
             // given
             String requestBody = "name=JohnDoe&email=john@example.com";
-            InputStream inputStream = new ByteArrayInputStream(requestBody.getBytes(StandardCharsets.UTF_8));
+            byte[] body = requestBody.getBytes(StandardCharsets.UTF_8);
             // when
-            HttpRequestBody httpRequestBody = httpRequestParser.parseBody(inputStream, requestBody.length());
+            Map<String, String> params = httpRequestParser.parseBody(body, requestBody.length());
             // then
-            assertThat(httpRequestBody.isExists()).isTrue();
-            assertThat(httpRequestBody.size()).isEqualTo(2);
-            assertThat(httpRequestBody.getParamValue("name")).isEqualTo("JohnDoe");
-            assertThat(httpRequestBody.getParamValue("email")).isEqualTo("john@example.com");
+            assertThat(params.isEmpty()).isFalse();
+            assertThat(params.size()).isEqualTo(2);
+            assertThat(params.get("name")).isEqualTo("JohnDoe");
+            assertThat(params.get("email")).isEqualTo("john@example.com");
         }
 
         @Test
@@ -132,14 +133,14 @@ public class HttpRequestParserTest {
         void httpRequestBodyTestWithAmpersand() throws IOException {
             // given
             String requestBody = "name=%26%26%26name%26&email=%26%26%26@example.com";
-            InputStream inputStream = new ByteArrayInputStream(requestBody.getBytes(StandardCharsets.UTF_8));
+            byte[] body = requestBody.getBytes(StandardCharsets.UTF_8);
             // when
-            HttpRequestBody httpRequestBody = httpRequestParser.parseBody(inputStream, requestBody.length());
+            Map<String, String> params = httpRequestParser.parseBody(body, requestBody.length());
             // then
-            assertThat(httpRequestBody.isExists()).isTrue();
-            assertThat(httpRequestBody.size()).isEqualTo(2);
-            assertThat(httpRequestBody.getParamValue("name")).isEqualTo("&&&name&");
-            assertThat(httpRequestBody.getParamValue("email")).isEqualTo("&&&@example.com");
+            assertThat(params.isEmpty()).isFalse();
+            assertThat(params.size()).isEqualTo(2);
+            assertThat(params.get("name")).isEqualTo("&&&name&");
+            assertThat(params.get("email")).isEqualTo("&&&@example.com");
         }
     }
 
